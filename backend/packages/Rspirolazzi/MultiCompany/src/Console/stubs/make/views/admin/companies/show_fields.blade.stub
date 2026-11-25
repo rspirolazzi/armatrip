@@ -1,0 +1,48 @@
+<!-- Id Field -->
+<div class="form-group">
+    {!! Form::label('id', 'Id:') !!}
+    <p>{!! $company->id !!}</p>
+</div>
+
+<!-- Name Field -->
+<div class="form-group">
+    {!! Form::label('name', 'Name:') !!}
+    <p>{!! $company->name !!}</p>
+</div>
+
+<!-- Code Field -->
+<div class="form-group">
+    {!! Form::label('code', 'Code:') !!}
+    <p>{!! $company->code !!}</p>
+</div>
+
+<!-- Description Field -->
+<div class="form-group">
+    {!! Form::label('description', 'Description:') !!}
+    <p>{!! $company->description !!}</p>
+</div>
+
+<!-- Config Field -->
+<div class="form-group">
+    {!! Form::label('config', 'Config:') !!}
+    <p>{!! $company->config !!}</p>
+</div>
+
+<!-- Active Field -->
+<div class="form-group">
+    {!! Form::label('active', 'Active:') !!}
+    <p>{!! $company->active !!}</p>
+</div>
+
+<!-- Created At Field -->
+<div class="form-group">
+    {!! Form::label('created_at', 'Created At:') !!}
+    <p>{!! $company->created_at !!}</p>
+</div>
+
+<!-- Updated At Field -->
+<div class="form-group">
+    {!! Form::label('updated_at', 'Updated At:') !!}
+    <p>{!! $company->updated_at !!}</p>
+</div>
+

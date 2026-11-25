@@ -1,0 +1,74 @@
+# Entorno local. Los secretos viven en .env, backend/.env y frontend/.env.local
+# (ignorados por git). Para crearlos: docker/preparar-entorno.ps1
+name: armatrip
+
+services:
+  mysql:
+    image: mysql:5.7
+    platform: linux/amd64
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE:?Falta DB_DATABASE en .env}
+      MYSQL_USER: ${DB_USERNAME:?Falta DB_USERNAME en .env}
+      MYSQL_PASSWORD: ${DB_PASSWORD:?Falta DB_PASSWORD en .env}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:?Falta DB_ROOT_PASSWORD en .env}
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      # Por TCP: durante la inicialización MySQL solo atiende el socket.
+      test: ["CMD-SHELL", "MYSQL_PWD=$$MYSQL_PASSWORD mysql -h 127.0.0.1 -u $$MYSQL_USER -e 'SELECT 1' $$MYSQL_DATABASE"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 30s
+
+  # Captura todos los emails: no sale ninguno real.
+  mailpit:
+    image: axllent/mailpit:v1.20
+    ports:
+      - "127.0.0.1:${MAIL_UI_PORT:-8026}:8025"
+
+  backend:
+    build: ./backend
+    depends_on:
+      mysql:
+        condition: service_healthy
+      mailpit:
+        condition: service_started
+    ports:
+      - "127.0.0.1:${BACKEND_PORT:-8085}:80"
+    environment:
+      AUTO_MIGRATE: ${AUTO_MIGRATE:-true}
+    volumes:
+      # Laravel lee backend/.env desde aquí. Los datos de conexión no se inyectan
+      # como variables del contenedor para que no pisen .env.testing.
+      - ./backend:/var/www/html
+      - backend_vendor:/var/www/html/vendor
+      - backend_storage:/var/www/html/storage
+      - backend_cache:/var/www/html/bootstrap/cache
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "-o", "/dev/null", "http://localhost/robots.txt"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 120s
+
+  frontend:
+    build: ./frontend
+    depends_on:
+      - backend
+    ports:
+      - "127.0.0.1:${FRONTEND_PORT:-3085}:3080"
+    environment:
+      PORT: 3080
+      CHOKIDAR_USEPOLLING: "true"
+    volumes:
+      - ./frontend:/app
+      - frontend_node_modules:/app/node_modules
+
+volumes:
+  mysql_data:
+  backend_vendor:
+  backend_storage:
+  backend_cache:
+  frontend_node_modules:

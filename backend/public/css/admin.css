@@ -1,0 +1,369 @@
+/* Paleta de marca A. Piezas (docs/marca.md) */
+:root {
+    --lago: #0A5560;
+    --lenga: #F2542D;
+    --retama: #FFC247;
+    --nieve: #F3F8F7;
+    --noche: #0B2530;
+    --bruma: #CFE3E1;
+    --fuente-titulos: 'Outfit', sans-serif;
+    --fuente-textos: 'Figtree', sans-serif;
+}
+
+.armatrip.skin-blue .main-sidebar, .armatrip.skin-blue .main-header .logo, .armatrip.skin-blue .main-header .navbar {
+    background-color: var(--lago);
+    color: white;
+}
+
+.armatrip.skin-blue .main-header .logo:hover, .armatrip.skin-blue .main-header .navbar .sidebar-toggle:hover,
+.armatrip.skin-blue .main-header li.user-header {
+    background-color: var(--noche);
+}
+
+.armatrip .main-header .logo img {
+    max-width: 100%;
+    max-height: 34px;
+}
+
+.armatrip.skin-blue .sidebar-menu > li:hover > a, .armatrip.skin-blue .sidebar-menu > li.active > a,
+.armatrip.skin-blue .sidebar-menu > li > .treeview-menu {
+    background-color: var(--noche);
+    color: white;
+}
+
+.armatrip .content-wrapper {
+    background-color: var(--nieve);
+}
+
+.armatrip .content-wrapper a:not(.btn):not(.label) {
+    color: var(--lago);
+}
+
+.armatrip .nav-custom .nav-pills > li.active > a:not(.btn):not(.label),
+.armatrip .content-wrapper .pagination > .active > a:not(.btn) {
+    color: white;
+}
+
+.armatrip .pagination > .active > span, .armatrip .pagination > .active > a {
+    background-color: var(--lago);
+    border-color: var(--lago);
+    color: white;
+}
+
+.armatrip a:focus, .armatrip button:focus, .armatrip .form-control:focus {
+    outline: 2px solid var(--retama);
+    outline-offset: 1px;
+}
+
+.armatrip .main-sidebar {
+    padding-top: 100px;
+}
+.flex-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.armatrip.skin-blue .sidebar a {
+    color: white;
+}
+
+.content-wrapper, .main-footer {
+    margin-left: 200px;
+    /*background-color: white;*/
+}
+@media (max-width: 767px){
+    .content-wrapper, .main-footer {
+        margin-left: 0;
+    }
+}
+
+.armatrip .sidebar-menu > li {
+    border-left: 4px solid var(--lenga);
+    border-bottom: 1px solid var(--bruma);
+}
+
+@media (min-width: 768px) {
+    .armatrip .navbar-nav > li > a {
+        padding-top: 30px;
+        padding-bottom: 25px;
+    }
+}
+
+/**
+nav pillis
+ */
+ .armatrip .nav-custom .nav.nav-pills {
+    background-color: var(--bruma);
+}
+
+.armatrip .nav-custom .nav.nav-pills li {
+    padding: 16px 8px;
+}
+
+.armatrip .nav-custom .nav.nav-pills li:first-child {
+    padding: 16px 16px;
+}
+
+.armatrip .nav-custom .nav.nav-pills > li > a {
+    background-color: var(--nieve);
+}
+
+.armatrip .nav-custom .nav-pills > li.active a, .nav-custom .nav-pills > li.active > a:hover {
+    background-color: var(--lago);
+}
+
+.armatrip .nav-custom .nav-pills > li.active > a, .nav-custom .nav-pills > li.active > a, .nav-custom .nav-pills > li.active > a:hover {
+    border-top-color: var(--lago);
+}
+
+.armatrip .nav-sm.nav-pills > li > a {
+    padding: 5px 0;
+}
+
+/*
+Box
+ */
+ .armatrip .box.box-primary {
+    border-top-color: var(--bruma);
+    border-top: 3px dashed var(--bruma);
+}
+
+.armatrip .success {
+    color: #7AC943;
+}
+
+.armatrip .label-success {
+    background-color: #7AC943 !important;
+}
+
+/*
+ROW
+ */
+ .armatrip .no-margin > div {
+    padding-right: 0;
+    padding-left: 0;
+}
+
+/*
+Botones
+ */
+
+ .armatrip .btn {
+    border: none;
+    border-radius: 10px;
+    text-transform: uppercase;
+}
+
+.armatrip .btn-default {
+    background-color: var(--nieve);
+}
+
+.armatrip .btn-default.active {
+    background-color: var(--lago);
+    color: white;
+}
+
+.armatrip .btn-primary, .btn-primary:hover {
+    background-color: var(--lago);
+    border-color: var(--lago);
+}
+
+.armatrip .sidebar-menu li.orders > a, .sidebar-menu li.active.orders > a {
+    background-color: var(--noche) !important;
+}
+
+#print {
+    display: none;
+}
+
+body {
+    font-family: var(--fuente-textos) !important;
+    font-weight: 400;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--fuente-titulos) !important;
+    font-weight: 400;
+}
+
+.armatrip .content-header {
+    margin-bottom: 30px;
+}
+
+.label-efectivo {
+    color: #7AC943 !important;
+    font-size: 18px !important;
+    font-weight: 600 !important;
+    font-family: var(--fuente-textos) !important;
+}
+
+.label-tarjeta {
+    color: #f39c12 !important;
+    font-size: 18px !important;
+    font-weight: 600 !important;
+    font-family: var(--fuente-textos) !important;
+}
+
+#orders-table .label {
+    padding: 5px 10px;
+    font-size: 18px;
+    font-weight: 300;
+}
+@media (max-width: 767px){
+    #orders-table .btn i.fa{
+        font-size:1.2em;
+    }
+}
+
+td {
+    vertical-align: middle !important;
+    font-weight: 500;
+}
+
+#orders-table th, #orders-table td {
+    color: var(--noche) !important;
+}
+
+.armatrip .box-header > .fa, .box-header > .glyphicon, .box-header > .ion, .box-header .box-title {
+    font-weight: 500 !important;
+}
+
+.armatrip .box-body {
+    color: var(--noche) !important;
+}
+
+.armatrip .box-body .form-control-static, .box-body p {
+    font-weight: 600;
+}
+
+.btn-gris {
+    font-size: 22px;
+    font-weight: 500;
+    padding: 5px 20px;
+}
+
+.btn-verde {
+    font-size: 22px;
+    font-weight: 500;
+    padding: 5px 20px;
+    color: white;
+    font-weight: 300;
+    background-color: var(--lago);
+}
+
+.fade.in, .fade.show {
+    opacity: 1;
+}
+
+.armatrip .modal.in .modal-dialog, .modal.show .modal-dialog {
+    -webkit-transform: translate(0, 0);
+    -ms-transform: translate(0, 0);
+    -o-transform: translate(0, 0);
+    transform: translate(0, 0);
+}
+
+.autocomplete {
+    position: relative;
+}
+
+.autocomplete .autocomplete-container {
+    position: absolute;
+    z-index:9999;
+    width: 100%;
+}
+
+.autocomplete .list-group .list-group-item .underline {
+    text-decoration: line-through;
+}
+.armatrip .btn-group-filter{
+    width: 100%;
+}
+
+.armatrip .btn-group-filter .btn{
+    width: 50%;
+}
+@media (max-width: 767px){
+    .armatrip .btn-group-filter .btn{
+        width: auto;
+    }
+}
+.order-price{
+    font-weight: 800;
+    font-size: 18px;   
+}
+@media (max-width: 767px){
+    .order-price{
+        font-weight: 400;
+        font-size: 12px;
+    }
+}
+@media (max-width: 767px){
+    .armatrip table, .armatrip table .btn{
+        font-size:0.90em;
+    }
+}
+.row.row-filter{
+
+}
+.row.row-filter > div{
+    padding-right: 1px;
+    padding-left: 1px;
+}
+.row.row-filter > div:last-child{
+    padding-right: 15px;
+}
+.row.row-filter > div:first-child{
+    padding-left: 15px;
+}
+
+input[type=date].form-control {
+    border-radius: 0;
+    box-shadow: none;
+    border-color: #d2d6de;
+}
+input[type=date].form-control {
+    display: block;
+    width: 100%;
+    height: 34px;
+    padding: 6px 12px;
+    font-size: 14px;
+    line-height: 1.42857143;
+    color: #555;
+    background-color: #fff;
+    background-image: none;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+    -webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
+    -o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+    transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+}
+.armatrip .btn-info, .armatrip .btn-info:hover, .armatrip .btn-info:focus {
+    background-color: var(--noche);
+    color: white;
+}
+
+.armatrip.skin-blue .sidebar-menu > li.active > a {
+    border-left-color: var(--retama);
+}
+
+.armatrip .store-icon {
+    max-width: 200px;
+    margin-bottom: 0;
+}
+
+/* AdminLTE declara estos fondos con !important. */
+.armatrip .info-box .bg-aqua, .armatrip .info-box .bg-green {
+    background-color: var(--lago) !important;
+}
+
+.armatrip .info-box .bg-red {
+    background-color: var(--noche) !important;
+}
+
+.armatrip .info-box .bg-yellow {
+    background-color: var(--retama) !important;
+    color: var(--noche) !important;
+}

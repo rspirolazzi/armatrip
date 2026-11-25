@@ -1,0 +1,26 @@
+{
+  "short_name": "Armatrip",
+  "name": "Armatrip",
+  "description": "Armalo a tu manera. Cotizá y reservá online tu viaje grupal o individual.",
+  "icons": [{
+    "src": "./img/favicon.png?v=armatrip",
+    "sizes": "32x32",
+    "type": "image/png"
+  }, {
+    "src": "./img/favicon_72.png?v=armatrip",
+    "sizes": "72x72",
+    "type": "image/png"
+  }, {
+    "src": "./img/favicon_144.png?v=armatrip",
+    "sizes": "144x144",
+    "type": "image/png"
+  }, {
+    "src": "./img/splash_2_512.png?v=armatrip",
+    "sizes": "512x512",
+    "type": "image/png"
+  }],
+  "start_url": "./",
+  "display": "standalone",
+  "theme_color": "#0A5560",
+  "background_color": "#F3F8F7"
+}

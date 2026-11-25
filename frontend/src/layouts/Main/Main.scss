@@ -1,0 +1,105 @@
+.layout-main {
+  @import "../../styles/brand";
+  @import "~bootstrap/scss/bootstrap";
+
+  .form-control {
+    border-top: 0;
+    border-right: 0;
+    border-radius: 0;
+  }
+
+  .form-group label {
+    font-family: $font-family-base !important;
+    font-weight: 700;
+    text-transform: uppercase !important;
+  }
+
+  .form-group .form-label {
+    font-size: 0.70em;
+  }
+
+  .bg-brand label, .bg-brand .form-group label {
+    color: white;
+  }
+
+  .border-brand {
+    border-bottom: 1px solid $lago !important
+  }
+
+  .text-primary, .btn-primary {
+    color: white;
+  }
+
+  .bg-info label, .bg-info .form-group label, .bg-info text, .bg-info select, .bg-info select.form-control, select.bg-info.form-control,
+  .bg-primary label, .bg-primary .form-group label, .bg-primary text, .bg-primary select, .bg-primary.form-control {
+    color: white !important;
+  }
+
+
+  .bg-white {
+    background-color: white;
+  }
+
+  .list-group-brand .list-group-item-action {
+    background-color: $bruma;
+    color: $noche;
+  }
+
+  .list-group-brand .list-group-item-action.active {
+    background-color: $lago;
+    color: $white;
+  }
+
+  .btn-light:hover {
+    background-color: transparent;
+  }
+
+  .btn-light.focus, .btn-light:focus {
+    box-shadow: none !important;
+  }
+
+  .form-control.is-invalid, .was-validated .form-control:invalid,
+  .form-control.is-valid, .was-validated .form-control:valid {
+    background-image: none;
+  }
+
+  .border-bottom-line {
+    border-bottom: none;
+  }
+
+  @media (min-width: 768px) {
+    .border-bottom-line {
+      border-bottom: 1px solid $bruma;
+    }
+  }
+
+  .bg-light-2 {
+    background-color: $bruma;
+  }
+
+  @for $v from 1 through 4 {
+    $value: ($v/10)+em !important;
+    .border-#{$v} {
+      border-top-width: $value;
+      border-right-width: $value;
+      border-bottom-width: $value;
+      border-left-width: $value;
+    }
+    .border-top-#{$v} {
+      border-top-width: $value;
+    }
+    .border-right-#{$v} {
+      border-right-width: $value;
+    }
+    .border-bottom-#{$v} {
+      border-bottom-width: $value;
+    }
+    .border-left-#{$v} {
+      border-left-width: $value;
+    }
+  }
+
+  body.layout-youngtourism {
+    background: $noche;
+  }
+}

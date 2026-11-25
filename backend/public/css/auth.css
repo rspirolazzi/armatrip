@@ -1,0 +1,101 @@
+/* Paleta de marca A. Piezas (docs/marca.md) */
+:root {
+    --lago: #0A5560;
+    --lenga: #F2542D;
+    --retama: #FFC247;
+    --nieve: #F3F8F7;
+    --noche: #0B2530;
+    --bruma: #CFE3E1;
+    --fuente-titulos: 'Outfit', sans-serif;
+    --fuente-textos: 'Figtree', sans-serif;
+}
+
+body.login-page {
+    background: url(../img/background_2020318.jpg) no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+}
+/*
+Paneles
+ */
+.panel-armatrip {
+    border-color: var(--lago);
+    border-radius: 0;
+}
+.panel-armatrip .panel-heading {
+    text-transform: uppercase;
+    background-color: var(--lago);
+    color: white;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+}
+
+.panel-armatrip .panel-body {
+}
+
+.panel-armatrip .panel-footer {
+}
+/*
+Botones
+ */
+.btn {
+    border: none;
+    text-transform: uppercase;
+}
+.btn-primary, .btn-primary:hover, .btn-primary:focus {
+    background-color: var(--lenga);
+    color: var(--noche);
+    text-transform: uppercase;
+}
+/*
+Header-Menu
+ */
+.navbar.navbar-inverse {
+    background-color: var(--lago);
+}
+.navbar-header {
+    height: 80px;
+}
+.navbar > .container-fluid .navbar-brand {
+    height: 100%;
+    margin-left: 50px;
+    padding: 10px 0;
+}
+.navbar-header a.navbar-brand img {
+    height: 40px;
+    margin-top: 10px;
+}
+.navbar-brand {
+    padding: 5px;
+}
+.login-logo img, .register-logo img {
+    width: 240px;
+    max-width: 100%;
+}
+.login-box, .register-box {
+    margin: 10% auto;
+}
+/*
+Footer
+ */
+.footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    /* Set the fixed height of the footer here */
+    height: 50px;
+}
+
+@media (max-width: 768px){
+    .login-box, .register-box {
+        margin: 30% auto!important;
+    }
+}
+body {
+    font-family: var(--fuente-textos);
+}
+h1, h2, h3, .btn, .panel-heading {
+    font-family: var(--fuente-titulos);
+}

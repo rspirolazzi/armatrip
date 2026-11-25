@@ -1,0 +1,4 @@
+# Debian 11 ya no tiene soporte: paquetes del archivo oficial, con fecha fija.
+deb [check-valid-until=no] http://snapshot.debian.org/archive/debian/20240901T000000Z bullseye main
+deb [check-valid-until=no] http://snapshot.debian.org/archive/debian/20240901T000000Z bullseye-updates main
+deb [check-valid-until=no] http://snapshot.debian.org/archive/debian-security/20240901T000000Z bullseye-security main

@@ -1,0 +1,22 @@
+@extends('layouts.app')
+
+@section('content')
+    <section class="content-header">
+        <h1>
+            Usuario {!! $user->name !!}
+        </h1>
+    </section>
+    <div class="content">
+        <div class="box box-primary">
+            <div class="box-body">
+                <div class="row" style="padding-left: 20px">
+                    @include('admin.administrators.show_fields')
+                    <div class="col-sm-12">
+                        <a href="{!! route('admin.administrators.index') !!}" class="btn btn-default btn-gradient">
+                            Volver</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+@endsection

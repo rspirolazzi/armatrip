@@ -1,0 +1,80 @@
+.Toastify__toast-container--top-center {
+    top: 20%;
+}
+
+.Toastify .Toastify__toast-container .Toastify__toast.circle {
+    box-shadow: none;
+
+}
+
+.Toastify .Toastify__toast-container .Toastify__toast.circle .Toastify__toast-body {
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    border-radius: 50%;
+    font-size: 100%;
+}
+.Toastify .Toastify__toast-container .Toastify__toast.circle .Toastify__toast-body .Toastify__toast-subbody {
+    font-size: 2.2em;
+}
+
+.Toastify__toast--default.circle {
+    background: transparent;
+    color: #aaa;
+}
+
+.Toastify__toast--info.circle {
+    background: transparent;
+}
+
+.Toastify__toast--success.circle {
+    background: transparent;
+}
+
+.Toastify__toast--warning.circle {
+    background: transparent;
+}
+
+.Toastify__toast--error.circle {
+    background: transparent;
+}
+
+.Toastify__toast--default.circle .Toastify__toast-body,
+.Toastify__toast--info.circle .Toastify__toast-body,
+.Toastify__toast--success.circle .Toastify__toast-body,
+.Toastify__toast--warning.circle .Toastify__toast-body,
+.Toastify__toast--error.circle .Toastify__toast-body {
+    background: transparent;
+}
+
+.Toastify__toast.circle .Toastify__close-button {
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    position: absolute;
+    top: 11px;
+    right: 62px;
+    font-size: 2.5em;
+    font-weight: 100;
+    opacity: 1;
+}
+
+.Toastify__toast.circle .Toastify__close-button--default, .Toastify__toast--default {
+    background: transparent;
+    color: white;
+}
+
+.Toastify__toast.circle .Toastify__close-button--success, .Toastify__toast--success {
+    background: #28a745;
+}
+
+.Toastify__toast.circle .Toastify__close-button--info, .Toastify__toast--info {
+    background: #17a2b8;
+}
+
+.Toastify__toast.circle .Toastify__close-button--warning, .Toastify__toast--warning {
+    background: #ffc107;
+}
+
+.Toastify__toast.circle .Toastify__close-button--error, .Toastify__toast--error {
+    background: #dc3545;
+}

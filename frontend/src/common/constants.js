@@ -1,0 +1,10 @@
+export const STORE_CODE_TURISMO_INDIVIDUAL = 'turismo_individual'
+export const ACCESS_TOKEN = 'ACCESS_TOKEN_SESSION'
+export const VERSION = 'armatrip_20200908_1849'
+// Opcionales: si faltan, el enlace no se muestra.
+export const CONTACT_EMAIL = process.env.REACT_APP_CONTACT_EMAIL || ''
+export const FACEBOOK_URL = process.env.REACT_APP_FACEBOOK_URL || ''
+export const INSTAGRAM_URL = process.env.REACT_APP_INSTAGRAM_URL || ''
+export const CONTACT_PHONE = process.env.REACT_APP_CONTACT_PHONE || ''
+export const CONTACT_ADDRESS = process.env.REACT_APP_CONTACT_ADDRESS || ''
+export const AGENCY_LICENSE = process.env.REACT_APP_AGENCY_LICENSE || ''

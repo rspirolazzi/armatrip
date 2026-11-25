@@ -1,0 +1,364 @@
+body.layout-individualtourism {
+  /**
+    Default Responsive
+      --breakpoint-xs: 0;
+      --breakpoint-sm: 576px;
+      --breakpoint-md: 768px;
+      --breakpoint-lg: 992px;
+      --breakpoint-xl: 1200px;
+   */
+  @import "../../styles/brand";
+  $secondary: $bruma;
+  $info: $noche;
+  $gray-400: $bruma;
+  $border-radius-lg: 1.5rem;
+  // stylelint-disable value-keyword-case
+  //$enable-gradients: true;
+  @import "~bootstrap/scss/bootstrap";
+  $font-size-xs: $font-size-base * .675 !default;
+
+  color: $primary;
+
+  .list-packages .rounded-dashed {
+    border-width: 1px;
+  }
+
+  #assist {
+    display: none;
+  }
+
+  .list-packages .media {
+    position: relative;
+    height: 84px;
+    cursor: pointer;
+  }
+
+  .list-packages .media-body h5 {
+    font-size: $font-size-sm*1.25;
+  }
+
+  .list-packages .media-body {
+    margin-left: 52px;
+  }
+
+  .list-packages .media-img {
+    position: absolute;
+    height: 86px;
+    margin-top: -1px;
+    margin-left: -1px;
+  }
+
+  .header .carousel {
+    background: radial-gradient(circle, $lago 95%, $bruma 95%);
+    border-top-left-radius: 25%;
+    border-bottom-right-radius: 25%;
+  }
+
+  main.container-sm, footer.container-sm {
+    padding-right: 0;
+    padding-left: 0;
+  }
+
+  @media (min-width: 768px) {
+    .header img.logo {
+      margin-top: -42px;
+    }
+    .header .carousel-title-container {
+      padding: 0 !important;
+      text-align: center;
+      background-image: url("./img/background_20201014_1940-01.jpg");
+    }
+    .header .carousel-title-container .header-title, .header .carousel-title-container .carousel.slide {
+      margin: 0 auto;
+    }
+    .header .carousel-title-container .carousel-item img {
+      width: auto !important;
+      height: 200px;
+    }
+
+  }
+
+  .header .carousel-control-prev, .header .carousel-control-next {
+    background: none;
+  }
+
+  body .list-packages-group .rounded-lg.card, body .list-packages-group .rounded-lg.card img {
+    border-radius: 3rem !important;
+    border: none;
+  }
+
+  .font-size-base {
+    font-size: $font-size-base;
+  }
+
+  .font-size-lg {
+    font-size: $font-size-lg;
+  }
+
+  .font-size-sm {
+    font-size: $font-size-sm;
+  }
+
+  .font-size-xs {
+    font-size: $font-size-xs;
+  }
+
+  .font-size-biggest {
+    font-size: 4rem;
+    font-weight: lighter;
+  }
+
+  .bg-primary label {
+    color: $white;
+  }
+
+  .form-group label {
+    font-size: $font-size-xs;
+    font-family: $font-family-base;
+  }
+
+  .form-group .form-control {
+    border: none;
+    border-radius: 0;
+  }
+
+  .header-title.with-icon {
+
+  }
+
+  .header-title.with-icon div.position-absolute {
+    top: -10px;
+    left: 4px;
+    width: 64px;
+    height: 64px;
+  }
+
+  .header-title.with-icon div.position-absolute.bg-info {
+    top: -6px;
+    left: -1px;
+    width: 64px;
+    height: 64px;
+  }
+
+  /*.header-title .rounded-pill {
+    border-radius: 0 !important;
+    border-bottom-right-radius: 50rem !important;
+  }*/
+
+  /*.header .carousel-item img {
+    border-top-left-radius: 50%;
+    border-bottom-right-radius: 50%;
+  }*/
+
+  .rounded-dashed {
+    border-style: dashed !important;
+  }
+
+  .rounded-top-dashed {
+    border-top-style: dashed !important;
+  }
+
+  .rounded-bottom-dashed {
+    border-bottom-style: dashed !important;
+  }
+
+  .rounded-left-dashed {
+    border-left-style: dashed !important;
+  }
+
+  .rounded-right-dashed {
+    border-right-style: dashed !important;
+  }
+
+  .rounded-top-dot-dash {
+    border-top-style: dot-dash !important;
+  }
+
+  .rounded-bottom-dot-dash {
+    border-bottom-style: dot-dash !important;
+  }
+
+  .rounded-left-dot-dash {
+    border-left-style: dot-dash !important;
+  }
+
+  .rounded-right-dot-dash {
+    border-right-style: dot-dash !important;
+  }
+
+  .rounded-top-left {
+    border-top-left-radius: $border-radius !important;
+  }
+
+  .rounded-top-right {
+    border-top-right-radius: $border-radius !important;
+  }
+
+  .rounded-bottom-left {
+    border-bottom-left-radius: $border-radius !important;
+  }
+
+  .rounded-bottom-right {
+    border-bottom-right-radius: $border-radius !important;
+  }
+
+  .rounded-pill-top-left {
+    border-top-left-radius: $rounded-pill !important;
+  }
+
+  .rounded-pill-top-right {
+    border-top-right-radius: $rounded-pill !important;
+  }
+
+  .rounded-pill-bottom-left {
+    border-bottom-left-radius: $rounded-pill !important;
+  }
+
+  .rounded-pill-bottom-right {
+    border-bottom-right-radius: $rounded-pill !important;
+  }
+
+  .rounded-half-pill-top-left {
+    border-top-left-radius: ($rounded-pill/2) !important;
+  }
+
+  .rounded-half-pill-top-right {
+    border-top-right-radius: ($rounded-pill/2) !important;
+  }
+
+  .rounded-half-pill-bottom-left {
+    border-bottom-left-radius: ($rounded-pill/2) !important;
+  }
+
+  .rounded-half-pill-bottom-right {
+    border-bottom-right-radius: ($rounded-pill/2) !important;
+  }
+
+  .rounded-lg-top-left {
+    border-top-left-radius: $border-radius-lg !important;
+  }
+
+  .rounded-lg-top-right {
+    border-top-right-radius: $border-radius-lg !important;
+  }
+
+  .rounded-lg-bottom-left {
+    border-bottom-left-radius: $border-radius-lg !important;
+  }
+
+  .rounded-lg-bottom-right {
+    border-bottom-right-radius: $border-radius-lg !important;
+  }
+
+  .rounded-circle-top-left {
+    border-top-left-radius: 50% !important;
+  }
+
+  .rounded-circle-top-right {
+    border-top-right-radius: 50% !important;
+  }
+
+  .rounded-circle-bottom-left {
+    border-bottom-left-radius: 50% !important;
+  }
+
+  .rounded-circle-bottom-right {
+    border-bottom-right-radius: 50% !important;
+  }
+
+  .product-carousel.carousel .carousel-indicators {
+    background-color: $primary;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+
+  main.page-pago #detail_reservation .bg-light-2 {
+    border: none !important;
+  }
+
+  @media only screen and (min-width: 768px) {
+    main.container-sm.page-checkout {
+      margin-left: 0 !important;
+      margin-right: 0 !important;
+      width: 100% !important;
+      max-width: 100% !important;
+      background-image: url(img/checkout_background.png);
+      background-size: 101%;
+      background-repeat: no-repeat;
+      background-position-x: center;
+      background-position-y: top;
+
+    }
+    main.container-sm.page-checkout .row {
+      padding-top: 110px;
+    }
+    main.page-servicios .row .border-left {
+      border-left: none !important;
+    }
+    main.main-individualtourism {
+      margin-top: 1.5rem !important;
+    }
+    main.page-home .list-packages-group, main.page-packs .list-packages {
+      margin: 0 5rem !important;
+    }
+    .list-packages .media-body {
+      margin-left: 100px;
+    }
+  }
+}
+
+body.layout-individualtourism.page-paquete #assist {
+  display: flex;
+}
+
+body.layout-individualtourism.page-register #credit_card_list,
+body.layout-individualtourism.page-servicios #credit_card_list,
+body.layout-individualtourism.page-servicios #assist,
+body.layout-individualtourism.page-confirmacion #credit_card_list,
+body.layout-individualtourism.page-confirmacion #assist,
+body.layout-individualtourism.page-reservar #credit_card_list,
+body.layout-individualtourism.page-reservar #assist,
+body.layout-individualtourism.page-pago #credit_card_list,
+body.layout-individualtourism.page-pago #assist,
+body.layout-individualtourism.page-checkout #credit_card_list,
+body.layout-individualtourism.page-checkout #assist,
+body.layout-individualtourism.page-seleccion #credit_card_list,
+body.layout-individualtourism.page-seleccion #assist {
+  display: none;
+}
+
+
+/**
+      --breakpoint-md: 768px;
+  */
+@media (max-width: 768px) {
+  main.main-individualtourism {
+    margin-top: 1.5rem !important;
+  }
+  body.layout-individualtourism.page-turismo-individual {
+    .card-title {
+      height: 48px;
+    }
+  }
+  body.layout-individualtourism.page-packs {
+    .list-packages {
+      .media {
+        margin-left: 2.3rem !important;
+      }
+
+      .media-img {
+        margin-top: -1px !important;
+        margin-left: -2.3rem !important;
+      }
+    }
+  }
+  body.page-checkout {
+    background-image: url(img/checkout_background-mobile.png);
+    background-size: 105%;
+    background-repeat: no-repeat;
+    background-position-x: -7px;
+    background-position-y: 40px;
+  }
+
+}

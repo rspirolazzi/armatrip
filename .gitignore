@@ -1,0 +1,26 @@
+# Secretos y entornos
+.env
+.env.*
+!.env.example
+
+# Volcados y datos
+*.sql
+*.zip
+*.dump
+/backups/
+
+# Documentación interna
+/docs/privado/
+
+# Dependencias y builds
+node_modules/
+/backend/vendor/
+/frontend/build/
+
+# Sistema y editores
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+.claude/
+*.log
