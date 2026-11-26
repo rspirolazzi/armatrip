@@ -62,8 +62,13 @@ jobs:
           cache-from: type=gha,scope=frontend-dev
           cache-to: type=gha,scope=frontend-dev,mode=max
 
+      # CI=true: una sola corrida, sin modo watch.
+      - name: Tests (Jest)
+        run: >-
+          docker compose run --rm --no-deps -T -e CI=true
+          frontend ./node_modules/.bin/react-scripts test
+
       # CI=false: con CI=true, CRA convierte en error las advertencias de ESLint que hoy existen.
-      # Sin paso de tests: App.test.js falla (docs/analysis-frontend.md, sección Tests).
       - name: Build de producción (incluye ESLint)
         run: >-
           docker compose run --rm --no-deps -T -e CI=false

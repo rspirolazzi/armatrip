@@ -215,7 +215,7 @@ Todas están en `.env.example`, sin valores sensibles. Las propias del proyecto:
 
 ### Riesgos de instalación
 
-- **Composer 2 omite clases que no cumplen PSR-4** al optimizar el autoload. Hay al menos dos: `FamToursSyncEmails` (archivo `FamTorusSyncEmails.php`), registrada en el kernel de consola y por tanto capaz de romper `artisan`; y `SMSException` (namespace `Exceptions`, carpeta `Exception`). Corregir los nombres antes de usar Composer 2, o usar Composer 1 ⚠️.
+- **Composer 2 omite clases que no cumplen PSR-4** al optimizar el autoload. `FamToursSyncEmails` y `SMSException` ya están corregidas (archivo y carpeta coinciden con clase y namespace). Quedan dos casos sin uso: `app/Repositories/API/PackageRepository.php` (namespace `App\Repositories\Api`) y `packages/Rspirolazzi/MultiCompany/src/Requestes/` (namespace `Http\Requests`). Docker sigue con Composer 1 ⚠️.
 - En Linux las mayúsculas y minúsculas de las rutas importan; en Windows no.
 - `npm` del backend: node-sass 4.8.3 requiere Node muy antiguo. Evitar salvo que haya que recompilar assets.
 
@@ -225,7 +225,7 @@ Todas están en `.env.example`, sin valores sensibles. Las propias del proyecto:
 vendor/bin/phpunit
 ```
 
-- ⚠️ `TestCaseWithDatabase` usa `DatabaseMigrations`: **recrea la base**. `.env.testing` apunta a `una base de pruebas` en el host `mysql`; verificarlo antes de correr.
-- `phpunit.xml` solo activa `tests/Startup` (un `assertTrue(true)`) y `tests/API` (registro).
-- **La suite `API` no termina** (verificado el 26/11/2026 en Docker): el primer test falla y luego aborta con `Cannot declare class App\Console\Commands\FamToursSyncEmails`, porque la clase vive en `FamTorusSyncEmails.php` y se carga dos veces. El CI solo corre `--testsuite Startup`.
-- Los tests de la raíz de `tests/` no pertenecen a ninguna suite. `UserTest` espera `last_name`, `telephone` y `password`, campos que el registro actual no usa: la cobertura efectiva es casi nula.
+- ⚠️ `TestCaseWithDatabase` **recrea y siembra la base** (`migrate:fresh --seed`) una vez por ejecución y corre cada test en una transacción que se descarta. Con `APP_ENV=testing` (lo fija `phpunit.xml`) Laravel lee `.env.testing` si existe; si no, `.env`. Verificar a qué base apunta antes de correr: nunca contra datos reales. En Docker, usar un proyecto Compose descartable ([docker.md](docker.md#tests)).
+- `phpunit.xml` activa `tests/Startup` (un `assertTrue(true)`) y `tests/API`. Ambas corren en el CI.
+- `tests/API/UserTest.php` cubre el registro web (`POST /api/register`): validación vacía (422), alta con pedido pendiente, actualización por email repetido y rollback cuando el paquete no tiene la fecha pedida. Usa empresa, provincia y paquete de las semillas (`secundarios`, `buenos-aires`, `bariloche` en agosto del año siguiente).
+- Los tests de la raíz de `tests/` y de `tests/Unit` no pertenecen a ninguna suite y no se mantienen: la cobertura sigue siendo mínima.

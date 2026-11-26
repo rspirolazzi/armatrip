@@ -79,10 +79,9 @@ jobs:
       - name: Cargar rutas y controladores
         run: docker compose exec -T backend php artisan route:list > /dev/null
 
-      # Solo Startup: la suite API aborta con "Cannot declare class FamToursSyncEmails"
-      # (docs/analysis-backend.md, sección Tests). Sumarla cuando se corrija.
-      - name: Tests (suite Startup)
-        run: docker compose exec -T backend vendor/bin/phpunit --testsuite Startup
+      # La suite API recrea y siembra esta base descartable; por eso va al final.
+      - name: Tests (PHPUnit)
+        run: docker compose exec -T backend vendor/bin/phpunit
 
       - name: Logs de los contenedores
         if: failure()

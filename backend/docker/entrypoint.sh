@@ -14,6 +14,9 @@ if [ "$(cat vendor/.lock-md5 2>/dev/null)" != "$lock" ]; then
     echo "$lock" > vendor/.lock-md5
 fi
 
+# El classmap optimizado del volumen queda viejo si se renombran o agregan clases.
+composer dump-autoload --no-interaction --no-scripts --quiet
+
 mkdir -p storage/app/public storage/framework/cache storage/framework/sessions storage/framework/views storage/logs
 
 php artisan package:discover

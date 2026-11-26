@@ -43,14 +43,12 @@ trait MakeUserTrait
     {
         $fake = Faker::create();
 
+        // Mismos campos que el registro web (UserRepository::register).
         return array_merge([
-            'name'=>$fake->name,
-            'last_name'=>$fake->lastName,
-            'email'=>$fake->email,
-            'password'=>$fake->password,
-            //'facebookID'=>$fake->
-            'telephone'=>$fake->phoneNumber,
-            //'isVerified'=>$fake->boolean,
+            'name' => $fake->name,
+            'email' => $fake->unique()->safeEmail,
+            'phone_code' => '11',
+            'phone_number' => (string) $fake->numberBetween(30000000, 69999999),
         ], $userFields);
     }
 }
