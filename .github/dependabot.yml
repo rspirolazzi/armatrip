@@ -1,0 +1,10 @@
+# Mantiene al día las GitHub Actions de los workflows. Las dependencias de la
+# aplicación no se actualizan automáticamente (AGENTS.md, regla 2).
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    commit-message:
+      prefix: "ci"

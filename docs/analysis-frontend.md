@@ -149,4 +149,6 @@ Con Express: instalar también las dependencias de `server/` y ejecutar `node se
 npm test
 ```
 
-Solo existe `App.test.js` y monta `<App/>` sin el `Provider` de Redux: se espera que falle ⚠️.
+Solo existe `App.test.js` y **falla** (verificado el 26/11/2026 en Docker): `react-ga` se inicializa al importar `layouts/withTracker.js` y no encuentra un `<script>` en jsdom (`Cannot read property 'parentNode' of undefined`). Además monta `<App/>` sin el `Provider` de Redux, así que probablemente falle también después de eso ⚠️. No corre en el CI.
+
+`npm run build` compila con advertencias de ESLint; con `CI=true` fallan el build.

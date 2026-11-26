@@ -14,6 +14,7 @@ Guía para cualquier agente que trabaje en este proyecto. Responder y documentar
 | Tocar API, panel, base de datos, pagos o emails | [docs/analysis-backend.md](docs/analysis-backend.md) |
 | Tocar pantallas, estado, rutas o build web | [docs/analysis-frontend.md](docs/analysis-frontend.md) |
 | Levantar el proyecto o tocar Docker | [docs/docker.md](docs/docker.md) |
+| Tocar workflows, imágenes o servidor | [docs/deploy.md](docs/deploy.md) |
 | Tocar logo, colores o textos de marca | [docs/marca.md](docs/marca.md) |
 | Analizar código desconocido | [.agents/skills/analyzing-projects/SKILL.md](.agents/skills/analyzing-projects/SKILL.md) |
 
@@ -22,6 +23,8 @@ Guía para cualquier agente que trabaje en este proyecto. Responder y documentar
 - `backend/` — Laravel 5.6, PHP 7.2.5–7.3, MySQL. Lógica en `app/Repositories`; rutas en `routes/`.
 - `frontend/` — React 16, Redux, CRA 2, Node 14. Rutas en `src/layouts/*/_.routing.js`; API en `src/services`.
 - `docs/` — análisis técnico.
+- `.github/workflows/` — verificación, publicación de imágenes y despliegue ([docs/deploy.md](docs/deploy.md)).
+- `deploy/` — Compose y variables de ejemplo del servidor.
 
 Todo vive en **un único repositorio** git, en la raíz.
 

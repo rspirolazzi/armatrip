@@ -1,0 +1,189 @@
+# Backend: verifica siempre; desde main publica ghcr.io/<dueño>/armatrip-backend y,
+# con la variable DEPLOY_ENABLED=true, hace pull y up en el servidor (docs/deploy.md).
+name: armatrip-backend
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "backend/**"
+      - "docker/**"
+      - "docker-compose.yml"
+      - ".env.example"
+      - ".github/workflows/armatrip-backend.yml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "backend/**"
+      - "docker/**"
+      - "docker-compose.yml"
+      - ".env.example"
+      - ".github/workflows/armatrip-backend.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# Un push nuevo cancela la verificación de un PR, pero nunca un despliegue en curso.
+concurrency:
+  group: armatrip-backend-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+env:
+  SERVICE: armatrip-backend
+
+jobs:
+  verify:
+    name: Verificar
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      # Entorno Docker del desarrollo local (docs/docker.md), con .env descartables.
+      - name: Crear archivos de entorno descartables
+        shell: pwsh
+        run: ./docker/preparar-entorno.ps1
+
+      - name: Configurar Docker Buildx
+        uses: docker/setup-buildx-action@v4
+
+      # El tag es el que espera Compose: <proyecto>-<servicio>.
+      - name: Construir la imagen de desarrollo
+        uses: docker/build-push-action@v7
+        with:
+          context: backend
+          target: dev
+          load: true
+          tags: armatrip-backend:latest
+          cache-from: type=gha,scope=backend-dev
+          cache-to: type=gha,scope=backend-dev,mode=max
+
+      # El entrypoint descubre paquetes, migra y siembra una base vacía.
+      - name: Levantar, migrar y sembrar
+        run: docker compose up -d --no-build --wait --wait-timeout 300 mysql backend
+
+      - name: Validar composer.json y composer.lock
+        run: docker compose exec -T backend composer validate --no-check-publish --no-check-all
+
+      - name: Sintaxis PHP
+        run: |
+          docker compose exec -T backend sh -c '
+            find app bootstrap/app.php config database packages routes tests -name "*.php" -print0 |
+              xargs -0 -n1 -P4 php -l > /tmp/lint.log 2>&1 || { grep -v "^No syntax errors" /tmp/lint.log; exit 1; }
+          '
+
+      - name: Cargar rutas y controladores
+        run: docker compose exec -T backend php artisan route:list > /dev/null
+
+      # Solo Startup: la suite API aborta con "Cannot declare class FamToursSyncEmails"
+      # (docs/analysis-backend.md, sección Tests). Sumarla cuando se corrija.
+      - name: Tests (suite Startup)
+        run: docker compose exec -T backend vendor/bin/phpunit --testsuite Startup
+
+      - name: Logs de los contenedores
+        if: failure()
+        run: docker compose logs --no-color --tail 200 mysql backend
+
+  publish:
+    name: Publicar imagen
+    needs: verify
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Configurar Docker Buildx
+        uses: docker/setup-buildx-action@v4
+
+      # El registro exige el dueño en minúsculas.
+      - name: Nombre de la imagen
+        id: image
+        run: echo "name=ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/$SERVICE" >> "$GITHUB_OUTPUT"
+
+      - name: Iniciar sesión en ghcr.io
+        uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Tags
+        id: meta
+        uses: docker/metadata-action@v6
+        with:
+          images: ${{ steps.image.outputs.name }}
+          tags: |
+            type=raw,value=latest
+            type=sha,prefix=sha-
+
+      - name: Construir y publicar
+        uses: docker/build-push-action@v7
+        with:
+          context: backend
+          target: prod
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha,scope=backend-prod
+          cache-to: type=gha,scope=backend-prod,mode=max
+
+  deploy:
+    name: Pull y up en el servidor
+    needs: publish
+    if: vars.DEPLOY_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Comprobar configuración
+        env:
+          DROPLET_IP: ${{ secrets.DROPLET_IP }}
+          DROPLET_USER: ${{ secrets.DROPLET_USER }}
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          DROPLET_SSH_FINGERPRINT: ${{ secrets.DROPLET_SSH_FINGERPRINT }}
+          DEPLOY_PATH: ${{ vars.DEPLOY_PATH }}
+        run: |
+          missing=0
+          for name in DROPLET_IP DROPLET_USER SSH_PRIVATE_KEY DROPLET_SSH_FINGERPRINT DEPLOY_PATH; do
+            if [ -z "${!name}" ]; then
+              echo "::error::Falta el secreto o la variable de GitHub: $name"
+              missing=1
+            fi
+          done
+          exit "$missing"
+
+      - name: Actualizar el contenedor
+        uses: appleboy/ssh-action@v1.2.5
+        env:
+          DEPLOY_PATH: ${{ vars.DEPLOY_PATH }}
+        with:
+          host: ${{ secrets.DROPLET_IP }}
+          username: ${{ secrets.DROPLET_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          fingerprint: ${{ secrets.DROPLET_SSH_FINGERPRINT }}
+          envs: DEPLOY_PATH,SERVICE
+          script: |
+            set -euo pipefail
+            cd "$DEPLOY_PATH"
+
+            # Si el pull falla, se corta antes de tocar el contenedor en ejecución.
+            if ! docker compose pull "$SERVICE"; then
+              echo "::error::El servidor no pudo descargar $SERVICE. Revisar 'docker login ghcr.io' (docs/deploy.md). No se cambió nada."
+              exit 1
+            fi
+            # Recrea solo este servicio y espera su healthcheck.
+            docker compose up -d --no-deps --wait --wait-timeout 180 "$SERVICE"
+
+            docker image prune -f || true
+            docker compose ps
+            docker compose images "$SERVICE"

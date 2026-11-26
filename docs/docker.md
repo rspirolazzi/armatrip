@@ -64,8 +64,27 @@ Los `.dockerignore` evitan que los archivos de entorno y los volcados entren en 
 - **`APP_DEBUG=false`** por defecto: no habilitarlo fuera de un entorno local.
 - Sin scheduler: no corren la sincronización IMAP ni los backups.
 
+## Integración continua
+
+GitHub Actions usa este mismo entorno para verificar cada push y pull request a `main` que toque la parte correspondiente (también se puede lanzar a mano). La verificación no necesita secretos: genera `.env` descartables con `docker/preparar-entorno.ps1`. Publicación y despliegue: [deploy.md](deploy.md).
+
+| Workflow | Verifica |
+|---|---|
+| [`armatrip-backend.yml`](../.github/workflows/armatrip-backend.yml) | Imagen, migraciones y semillas desde cero, `composer validate`, sintaxis PHP, carga de rutas y suite `Startup` |
+| [`armatrip-frontend.yml`](../.github/workflows/armatrip-frontend.yml) | Imagen (`npm ci`) y build de producción con ESLint |
+
+Los Dockerfiles tienen una etapa `prod` para publicar; la última, `dev`, es la de este entorno y debe seguir siendo la última.
+
+Fuera del CI hasta corregir el código:
+
+- **Suite `API` de PHPUnit:** falla y aborta ([backend](analysis-backend.md#tests)).
+- **`npm test`:** falla ([frontend](analysis-frontend.md#tests)).
+- **ESLint estricto:** el build usa `CI=false` porque las advertencias actuales lo harían fallar.
+
+Si cambia el nombre del proyecto Compose o de un servicio, actualizar el `tags` de la imagen en el workflow. Dependabot revisa mensualmente las versiones de las Actions.
+
 ## Limitaciones conocidas
 
 - Solo Primarios y Secundarios traen paquetes de prueba; los demás se cargan en el panel. Un paquete necesita un grupo activo ("Agrupar por") para aparecer en la web.
 - Las empresas sembradas no tienen imagen: se cargan en el panel (JPG o PNG).
-- No se probaron pagos, SMS, IMAP, reCAPTCHA ni PHPUnit.
+- No se probaron pagos, SMS, IMAP ni reCAPTCHA. De PHPUnit solo pasa la suite `Startup`.

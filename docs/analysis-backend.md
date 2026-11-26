@@ -227,4 +227,5 @@ vendor/bin/phpunit
 
 - ⚠️ `TestCaseWithDatabase` usa `DatabaseMigrations`: **recrea la base**. `.env.testing` apunta a `una base de pruebas` en el host `mysql`; verificarlo antes de correr.
 - `phpunit.xml` solo activa `tests/Startup` (un `assertTrue(true)`) y `tests/API` (registro).
+- **La suite `API` no termina** (verificado el 26/11/2026 en Docker): el primer test falla y luego aborta con `Cannot declare class App\Console\Commands\FamToursSyncEmails`, porque la clase vive en `FamTorusSyncEmails.php` y se carga dos veces. El CI solo corre `--testsuite Startup`.
 - Los tests de la raíz de `tests/` no pertenecen a ninguna suite. `UserTest` espera `last_name`, `telephone` y `password`, campos que el registro actual no usa: la cobertura efectiva es casi nula.

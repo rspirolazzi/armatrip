@@ -1,0 +1,195 @@
+# Frontend: verifica siempre; desde main publica ghcr.io/<dueño>/armatrip-frontend y,
+# con la variable DEPLOY_ENABLED=true, hace pull y up en el servidor (docs/deploy.md).
+name: armatrip-frontend
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "frontend/**"
+      - "docker/preparar-entorno.ps1"
+      - "docker-compose.yml"
+      - ".env.example"
+      - ".github/workflows/armatrip-frontend.yml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "frontend/**"
+      - "docker/preparar-entorno.ps1"
+      - "docker-compose.yml"
+      - ".env.example"
+      - ".github/workflows/armatrip-frontend.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# Un push nuevo cancela la verificación de un PR, pero nunca un despliegue en curso.
+concurrency:
+  group: armatrip-frontend-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+env:
+  SERVICE: armatrip-frontend
+
+jobs:
+  verify:
+    name: Verificar
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      # Compose necesita los .env aunque solo se use el servicio frontend.
+      - name: Crear archivos de entorno descartables
+        shell: pwsh
+        run: ./docker/preparar-entorno.ps1
+
+      - name: Configurar Docker Buildx
+        uses: docker/setup-buildx-action@v4
+
+      # El tag es el que espera Compose: <proyecto>-<servicio>.
+      - name: Construir la imagen de desarrollo (npm ci)
+        uses: docker/build-push-action@v7
+        with:
+          context: frontend
+          target: dev
+          load: true
+          tags: armatrip-frontend:latest
+          cache-from: type=gha,scope=frontend-dev
+          cache-to: type=gha,scope=frontend-dev,mode=max
+
+      # CI=false: con CI=true, CRA convierte en error las advertencias de ESLint que hoy existen.
+      # Sin paso de tests: App.test.js falla (docs/analysis-frontend.md, sección Tests).
+      - name: Build de producción (incluye ESLint)
+        run: >-
+          docker compose run --rm --no-deps -T -e CI=false
+          frontend ./node_modules/.bin/react-scripts build
+
+  publish:
+    name: Publicar imagen
+    needs: verify
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      # La URL de la API queda compilada en la imagen.
+      - name: Comprobar configuración
+        env:
+          REACT_APP_API_URL: ${{ vars.REACT_APP_API_URL }}
+        run: |
+          if [ -z "$REACT_APP_API_URL" ]; then
+            echo "::error::Falta la variable de GitHub REACT_APP_API_URL (docs/deploy.md)"
+            exit 1
+          fi
+
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Configurar Docker Buildx
+        uses: docker/setup-buildx-action@v4
+
+      # El registro exige el dueño en minúsculas.
+      - name: Nombre de la imagen
+        id: image
+        run: echo "name=ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/$SERVICE" >> "$GITHUB_OUTPUT"
+
+      - name: Iniciar sesión en ghcr.io
+        uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Tags
+        id: meta
+        uses: docker/metadata-action@v6
+        with:
+          images: ${{ steps.image.outputs.name }}
+          tags: |
+            type=raw,value=latest
+            type=sha,prefix=sha-
+
+      # Solo variables públicas: todo REACT_APP_* queda visible en el navegador.
+      - name: Construir y publicar
+        uses: docker/build-push-action@v7
+        with:
+          context: frontend
+          target: prod
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha,scope=frontend-prod
+          cache-to: type=gha,scope=frontend-prod,mode=max
+          build-args: |
+            APP_BASE_PATH=${{ vars.APP_BASE_PATH || '/cotizador' }}
+            REACT_APP_API_URL=${{ vars.REACT_APP_API_URL }}
+            REACT_APP_API_MERCADOPAGO_KEY=${{ vars.REACT_APP_API_MERCADOPAGO_KEY }}
+            REACT_APP_API_GOOGLE_MAP_KEY=${{ vars.REACT_APP_API_GOOGLE_MAP_KEY }}
+            REACT_APP_API_GOOGLE_RECAPTCHA_KEY=${{ vars.REACT_APP_API_GOOGLE_RECAPTCHA_KEY }}
+            REACT_APP_API_GOOGLE_ANALYTICS=${{ vars.REACT_APP_API_GOOGLE_ANALYTICS }}
+            REACT_APP_FACEBOOK_APP_ID=${{ vars.REACT_APP_FACEBOOK_APP_ID }}
+            REACT_APP_CONTACT_EMAIL=${{ vars.REACT_APP_CONTACT_EMAIL }}
+            REACT_APP_CONTACT_PHONE=${{ vars.REACT_APP_CONTACT_PHONE }}
+            REACT_APP_CONTACT_ADDRESS=${{ vars.REACT_APP_CONTACT_ADDRESS }}
+            REACT_APP_AGENCY_LICENSE=${{ vars.REACT_APP_AGENCY_LICENSE }}
+            REACT_APP_FACEBOOK_URL=${{ vars.REACT_APP_FACEBOOK_URL }}
+            REACT_APP_INSTAGRAM_URL=${{ vars.REACT_APP_INSTAGRAM_URL }}
+
+  deploy:
+    name: Pull y up en el servidor
+    needs: publish
+    if: vars.DEPLOY_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Comprobar configuración
+        env:
+          DROPLET_IP: ${{ secrets.DROPLET_IP }}
+          DROPLET_USER: ${{ secrets.DROPLET_USER }}
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          DROPLET_SSH_FINGERPRINT: ${{ secrets.DROPLET_SSH_FINGERPRINT }}
+          DEPLOY_PATH: ${{ vars.DEPLOY_PATH }}
+        run: |
+          missing=0
+          for name in DROPLET_IP DROPLET_USER SSH_PRIVATE_KEY DROPLET_SSH_FINGERPRINT DEPLOY_PATH; do
+            if [ -z "${!name}" ]; then
+              echo "::error::Falta el secreto o la variable de GitHub: $name"
+              missing=1
+            fi
+          done
+          exit "$missing"
+
+      - name: Actualizar el contenedor
+        uses: appleboy/ssh-action@v1.2.5
+        env:
+          DEPLOY_PATH: ${{ vars.DEPLOY_PATH }}
+        with:
+          host: ${{ secrets.DROPLET_IP }}
+          username: ${{ secrets.DROPLET_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          fingerprint: ${{ secrets.DROPLET_SSH_FINGERPRINT }}
+          envs: DEPLOY_PATH,SERVICE
+          script: |
+            set -euo pipefail
+            cd "$DEPLOY_PATH"
+
+            # Si el pull falla, se corta antes de tocar el contenedor en ejecución.
+            if ! docker compose pull "$SERVICE"; then
+              echo "::error::El servidor no pudo descargar $SERVICE. Revisar 'docker login ghcr.io' (docs/deploy.md). No se cambió nada."
+              exit 1
+            fi
+            # Recrea solo este servicio y espera su healthcheck.
+            docker compose up -d --no-deps --wait --wait-timeout 180 "$SERVICE"
+
+            docker image prune -f || true
+            docker compose ps
+            docker compose images "$SERVICE"

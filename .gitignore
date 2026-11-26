@@ -2,6 +2,7 @@
 .env
 .env.*
 !.env.example
+/deploy/backend.env
 
 # Volcados y datos
 *.sql
