@@ -152,7 +152,6 @@ jobs:
   deploy:
     name: Pull y up en el servidor
     needs: publish
-    if: vars.DEPLOY_ENABLED == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
