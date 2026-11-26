@@ -160,28 +160,71 @@ jobs:
           done
           exit "$missing"
 
-      - name: Actualizar el contenedor
-        uses: appleboy/ssh-action@v1.2.5
+      # Acepta la huella de cualquier clave del servidor (ed25519, ecdsa o rsa), con o
+      # sin el prefijo SHA256:, y deja solo esa clave como conocida para la conexión.
+      - name: Verificar la identidad del servidor
         env:
-          DEPLOY_PATH: ${{ vars.DEPLOY_PATH }}
-        with:
-          host: ${{ secrets.DROPLET_IP }}
-          username: ${{ secrets.DROPLET_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          fingerprint: ${{ secrets.DROPLET_SSH_FINGERPRINT }}
-          envs: DEPLOY_PATH,SERVICE
-          script: |
-            set -euo pipefail
-            cd "$DEPLOY_PATH"
+          DROPLET_IP: ${{ secrets.DROPLET_IP }}
+          DROPLET_SSH_FINGERPRINT: ${{ secrets.DROPLET_SSH_FINGERPRINT }}
+        run: |
+          set -euo pipefail
+          expected="$(printf '%s' "$DROPLET_SSH_FINGERPRINT" | tr -d '[:space:]')"
+          expected="SHA256:${expected#SHA256:}"
 
-            # Si el pull falla, se corta antes de tocar el contenedor en ejecución.
-            if ! docker compose pull "$SERVICE"; then
-              echo "::error::El servidor no pudo descargar $SERVICE. Revisar 'docker login ghcr.io' (docs/deploy.md). No se cambió nada."
-              exit 1
+          scanned="$(ssh-keyscan -T 15 -t ed25519,ecdsa,rsa "$DROPLET_IP" 2>/dev/null || true)"
+          if [ -z "$scanned" ]; then
+            echo "::error::No se pudo leer la clave del servidor por SSH (puerto 22). Revisar DROPLET_IP y el firewall."
+            exit 1
+          fi
+
+          match=""
+          while read -r line; do
+            if [ "$(printf '%s\n' "$line" | ssh-keygen -lf - | awk '{print $2}')" = "$expected" ]; then
+              match="$line"
             fi
-            # Recrea solo este servicio y espera su healthcheck.
-            docker compose up -d --no-deps --wait --wait-timeout 180 "$SERVICE"
+          done <<< "$scanned"
 
-            docker image prune -f || true
-            docker compose ps
-            docker compose images "$SERVICE"
+          if [ -z "$match" ]; then
+            echo "::error::DROPLET_SSH_FINGERPRINT no coincide con ninguna clave del servidor."
+            echo "Huellas que presenta el servidor (copiar una, con SHA256:, y compararla en el servidor):"
+            printf '%s\n' "$scanned" | ssh-keygen -lf -
+            exit 1
+          fi
+
+          install -d -m 700 ~/.ssh
+          printf '%s\n' "$match" > ~/.ssh/known_hosts
+
+      - name: Actualizar el contenedor
+        env:
+          DROPLET_IP: ${{ secrets.DROPLET_IP }}
+          DROPLET_USER: ${{ secrets.DROPLET_USER }}
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          DEPLOY_PATH: ${{ vars.DEPLOY_PATH }}
+        run: |
+          set -euo pipefail
+          install -m 600 /dev/null ~/.ssh/deploy_key
+          printf '%s\n' "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/deploy_key
+
+          ssh -i ~/.ssh/deploy_key -o BatchMode=yes -o IdentitiesOnly=yes \
+            -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts" \
+            "$DROPLET_USER@$DROPLET_IP" \
+            "DEPLOY_PATH=$(printf '%q' "$DEPLOY_PATH") SERVICE=$(printf '%q' "$SERVICE") bash -s" <<'EOF'
+          set -euo pipefail
+          cd "$DEPLOY_PATH"
+
+          # Si el pull falla, se corta antes de tocar el contenedor en ejecución.
+          if ! docker compose pull "$SERVICE"; then
+            echo "::error::El servidor no pudo descargar $SERVICE. Revisar 'docker login ghcr.io' (docs/deploy.md). No se cambió nada."
+            exit 1
+          fi
+          # Recrea solo este servicio y espera su healthcheck.
+          docker compose up -d --no-deps --wait --wait-timeout 180 "$SERVICE"
+
+          docker image prune -f || true
+          docker compose ps
+          docker compose images "$SERVICE"
+          EOF
+
+      - name: Borrar la clave del runner
+        if: always()
+        run: rm -f ~/.ssh/deploy_key

@@ -38,7 +38,7 @@ En *Settings → Secrets and variables → Actions*.
 | Variable | `DEPLOY_PATH` | Carpeta del servidor con `docker-compose.yml` |
 | Secreto | `DROPLET_IP`, `DROPLET_USER` | Dirección y usuario SSH |
 | Secreto | `SSH_PRIVATE_KEY` | Clave privada exclusiva para el despliegue |
-| Secreto | `DROPLET_SSH_FINGERPRINT` | Huella SHA256 de la clave del servidor |
+| Secreto | `DROPLET_SSH_FINGERPRINT` | Huella SHA256 de una clave del servidor, de cualquier tipo, con o sin `SHA256:`. En el servidor: `ssh-keygen -lf /etc/ssh/ssh_host_ed25519_key.pub`. Si no coincide, el log del despliegue muestra las huellas que presenta el servidor |
 
 Las variables del frontend se compilan dentro de la imagen: al cambiarlas hay que volver a publicar.
 
