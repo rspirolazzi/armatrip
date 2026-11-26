@@ -149,7 +149,9 @@ Con Express: instalar también las dependencias de `server/` y ejecutar `node se
 npm test
 ```
 
-Solo existe `App.test.js`: monta `<App/>` con el store real, `Provider` y un `Router` en memoria (como `index.js`, sin `PersistGate`), y simula `axios` para no salir a la red. Corre en el CI (`CI=true`, sin modo watch).
+Solo existe `App.test.js`: monta `<App/>` con el store real, `Provider` y un `Router` en memoria (como `index.js`, sin `PersistGate`), y simula `axios` para no salir a la red. Corre en el CI (`CI=true`, sin modo watch). `src/setupTests.js` completa las APIs del navegador que faltan en jsdom (`matchMedia`).
+
+Jest no transpila `node_modules`: importar los paquetes por su entrada (`import {connect} from "react-redux"`), no por rutas internas ESM (`react-redux/es/...`).
 
 `layouts/withTracker.js` solo inicializa Google Analytics si `REACT_APP_API_GOOGLE_ANALYTICS` tiene valor, y en tests usa el `testMode` de `react-ga`, que no inserta el `<script>`. En modo test CRA no lee `.env.local`.
 
