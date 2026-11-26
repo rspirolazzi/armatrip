@@ -2,7 +2,7 @@ import React from 'react'
 import {Col, Image, Media, Row} from 'react-bootstrap'
 import {bindActionCreators} from "redux"
 import {_setPackage} from "../../store/package"
-import connect from "react-redux/es/connect/connect"
+import {connect} from "react-redux"
 import {isMobile, truncateString} from "../../common/utils";
 import calendar from '../../layouts/IndividualTourism/img/calender.png'
 import _ from 'lodash'

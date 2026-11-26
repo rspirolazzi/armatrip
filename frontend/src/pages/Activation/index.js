@@ -2,7 +2,7 @@ import React from 'react'
 import UserMobileInput from "../../components/UserMobileInput"
 import UserMobileActivation from "../../components/UserMobileActivation"
 import {userSelector} from "../../store/user/selectors"
-import connect from "react-redux/es/connect/connect"
+import {connect} from "react-redux"
 
 const Activation = ({user}) => <div>
         <h4 className={"text-brand"}>Hola {user.name}!</h4>

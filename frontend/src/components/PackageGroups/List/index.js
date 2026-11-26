@@ -3,7 +3,7 @@ import {Button} from 'react-bootstrap'
 import {Link} from "react-router-dom"
 import {bindActionCreators} from "redux"
 import {_setPackage} from "../../../store/package"
-import connect from "react-redux/es/connect/connect"
+import {connect} from "react-redux"
 
 const List = ({
                   packages_grouped,

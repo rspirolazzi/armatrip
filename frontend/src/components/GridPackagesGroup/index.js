@@ -2,7 +2,7 @@ import React from 'react'
 import {Card, Col, Row} from 'react-bootstrap'
 import {bindActionCreators} from "redux"
 import {_setPackageGroup} from "../../store/package"
-import connect from "react-redux/es/connect/connect"
+import {connect} from "react-redux"
 
 const GridPackagesGroup = ({
                                packages_grouped,

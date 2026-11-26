@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react'
-import connect from "react-redux/es/connect/connect"
+import {connect} from "react-redux"
 import SelectInput from "../../components/SelectInput"
 import {bindActionCreators} from "redux"
 import {_setOrderDate} from "../../store/order"

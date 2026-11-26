@@ -5,7 +5,7 @@ export default <></>
 /*
 import PropTypes from "prop-types";
 import { bindActionCreators } from "redux";
-import connect from "react-redux/es/connect/connect";
+import {connect} from "react-redux";
 import { apply, remove } from "../../store/coupon/operations"
 import { addedCouponSelector, maxLengthCouponSelector, isVisibleCouponSelector, couponStateSelector } from '../../store/coupon/selectors'
 import { configurationStateSelector } from '../../store/configuration/selectors'
