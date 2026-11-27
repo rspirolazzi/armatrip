@@ -291,25 +291,35 @@ class ApiController extends AppBaseController
         return response()->json(['success' => true, 'data' => $config]);
     }
 
+    /**
+     * Errores que reporta la web. Es público (llegan antes del login): se limita
+     * a 10 por minuto e IP, se recorta el tamaño y el texto va al contexto, sin
+     * saltos de línea, para que no pueda falsificar líneas del log.
+     * No responde error: la web reporta sus propios errores y entraría en bucle.
+     * El límite es propio porque el throttle de Laravel 5.6 comparte la clave
+     * con el del grupo api.
+     */
     public function log(Request $request)
     {
-        try {
-            $message = $request->get('message');
-            $data = json_encode($request->get('data'));
-            switch ($request->get('type')) {
-                case 'error':
-                    Log::error('[WEB]' . $message, ['data' => $data]);
-                    break;
-                case 'debug':
-                    Log::debug('[WEB]' . $message, ['data' => $data]);
-                    break;
-                default:
-                    Log::info('[WEB]' . $message, ['data' => $data]);
-                    break;
-            }
+        $limiter = app(RateLimiter::class);
+        $key = 'web-log:' . sha1((string) $request->ip());
+        if ($limiter->tooManyAttempts($key, 10)) {
+            return $this->sendResponse([]);
+        }
+        $limiter->hit($key, 1);
 
-        } catch (\Exception $ex) {
-            Log::error('Ocurrio un error al devolver las configuraciones');
+        $clean = function ($value, $max) {
+            $value = is_scalar($value) ? (string) $value : json_encode($value);
+            return mb_substr(preg_replace('/[\x00-\x1F\x7F]+/u', ' ', $value), 0, $max);
+        };
+        $context = [
+            'message' => $clean($request->input('message'), 500),
+            'data' => $clean($request->input('data'), 5000),
+        ];
+        if ($request->input('type') === 'error') {
+            Log::error('[WEB] Error reportado por la web', $context);
+        } else {
+            Log::info('[WEB] Mensaje reportado por la web', $context);
         }
         return $this->sendResponse([]);
     }

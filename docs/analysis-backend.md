@@ -131,7 +131,7 @@ El JWT viaja como **parámetro `token`**, no en el header `Authorization`. CORS 
 | `GET order/show/{code}` | Cotización compartida |
 | `POST contact/country` | Contacto |
 | `GET notifications`, `POST notifications/uri` | Mensajes emergentes |
-| `GET config`, `POST log/save` | Configuración y logs del cliente |
+| `GET config`, `POST log/save` | Configuración y logs del cliente. `log/save` acepta 10 por minuto e IP (el resto se descarta sin error), recorta a 500/5000 caracteres y quita saltos de línea |
 
 Las reservas se consultan solo desde el panel (`/admin/orders`, con sesión y permisos). La versión API pública se eliminó en noviembre de 2026 porque exponía los datos sin autenticación.
 
@@ -230,5 +230,6 @@ vendor/bin/phpunit
 
 - ⚠️ `TestCaseWithDatabase` **recrea y siembra la base** (`migrate:fresh --seed`) una vez por ejecución y corre cada test en una transacción que se descarta. Con `APP_ENV=testing` (lo fija `phpunit.xml`) Laravel lee `.env.testing` si existe; si no, `.env`. Verificar a qué base apunta antes de correr: nunca contra datos reales. En Docker, usar un proyecto Compose descartable ([docker.md](docker.md#tests)).
 - `phpunit.xml` activa `tests/Startup` (un `assertTrue(true)`) y `tests/API`. Ambas corren en el CI.
+- `tests/API/WebLogTest.php` cubre el límite y la limpieza de `log/save`.
 - `tests/API/UserTest.php` cubre el registro web (`POST /api/register`) y `sms/verify`: validación vacía (422), alta con pedido pendiente y código SMS sin JWT, `verification_type` del cliente ignorado, email existente sin cambios (y rechazado con otro celular), sesión al validar el código y rollback cuando el paquete no tiene la fecha pedida. El envío se simula con `Sms::shouldReceive`. Usa empresa, provincia y paquete de las semillas (`secundarios`, `buenos-aires`, `bariloche` en agosto del año siguiente).
 - Los tests de la raíz de `tests/` y de `tests/Unit` no pertenecen a ninguna suite y no se mantienen: la cobertura sigue siendo mínima.
