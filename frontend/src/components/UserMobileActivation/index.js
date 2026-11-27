@@ -19,6 +19,7 @@ const UserMobileActivation = ({
                                   packageDetail,
                                   phone_code,
                                   phone_number,
+                                  onVerified,
                               }) => {
     const [seconds, setSeconds] = useState(45);
 
@@ -46,7 +47,11 @@ const UserMobileActivation = ({
         validationSchema={schema}
         onSubmit={(data) => {
             _verificationSMS(data.code, phone_code, phone_number).then(() => {
-                history.push(route('packageDetail', [packageDetail.code]))
+                if (onVerified) {
+                    onVerified()
+                } else {
+                    history.push(route('packageDetail', [packageDetail.code]))
+                }
             })
         }}
         initialValues={{

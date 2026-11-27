@@ -47,14 +47,14 @@ class Sms
     }
 
     /**
-     * SMS simulado para desarrollo: nunca se usa fuera del entorno local.
+     * SMS simulado por email: solo en el entorno local o en una demo declarada (SMS_DEMO=true).
      *
      * @throws SMSException
      */
     private function sendByMail($phone, $body)
     {
-        if (!app()->environment('local')) {
-            throw new SMSException('El SMS simulado solo se permite en el entorno local.');
+        if (!app()->environment('local') && !config('sms.demo')) {
+            throw new SMSException('El SMS simulado solo se permite en el entorno local o en la demo.');
         }
         Mail::raw($body, function ($mail) use ($phone) {
             $mail->to(config('sms.mail_to'))->subject('SMS simulado para ' . $phone);

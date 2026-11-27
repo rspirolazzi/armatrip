@@ -1,9 +1,11 @@
 <?php
 
 return [
-    // twilio: envío real. mail: SMS simulado por email, solo con APP_ENV=local.
+    // twilio: envío real. mail: SMS simulado por email, solo con APP_ENV=local o SMS_DEMO=true.
     'driver' => env('SMS_DRIVER', 'twilio'),
     'mail_to' => env('SMS_MAIL_TO', 'sms@armatrip.test'),
+    // Servidor de demostración: permite el driver mail fuera del entorno local.
+    'demo' => (bool) env('SMS_DEMO', false),
     'code' => [
         'expires_minutes' => 10,
         'max_attempts' => 5,

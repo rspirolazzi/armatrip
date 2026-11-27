@@ -1,11 +1,11 @@
 import PropTypes from 'prop-types'
-import React, {useEffect, useLayoutEffect} from 'react'
+import React, {useEffect, useLayoutEffect, useState} from 'react'
 import {Formik} from 'formik'
 import {Col, Container, Form, Image, Row} from "react-bootstrap"
 import schema from './_.schema'
 import {connect} from 'react-redux'
 import {bindActionCreators, compose} from 'redux'
-import {_preRegister, _setJWT, _setUser, _setUserIsValidClear} from "../../../store/user"
+import {_preRegister, _setUserIsValidClear} from "../../../store/user"
 import {getPackageSelector} from "../../../store/package/selectors"
 import {getSelectedStore} from "../../../store/store/selectors"
 import {jwtStateSelector, userSelector} from "../../../store/user/selectors"
@@ -14,6 +14,7 @@ import {delJWT} from "../../../services/Base";
 import FormControlIncrement from "../../../components/FormControlIncrement";
 import withMenuRouter from "../../../layouts/withMenuRouter";
 import IndividualButton from "../../../components/Individual/Button";
+import UserMobileActivation from "../../../components/UserMobileActivation";
 import calendar from '../../../layouts/IndividualTourism/img/calender.png'
 import {_setParamsHeader} from "../../../store/core";
 import {url_src} from "../../../store/core/_.utils";
@@ -28,10 +29,10 @@ const IndividualRegister = ({
                                 route,
                                 jwt,
                                 _register,
-                                _setUser,
-                                _setJWT,
                                 _setParamsHeader,
                             }) => {
+    // Celular al que se envió el código; la sesión llega al validarlo.
+    const [phoneToVerify, setPhoneToVerify] = useState(null)
 
     useEffect(() => {
         if (jwt) {
@@ -54,6 +55,26 @@ const IndividualRegister = ({
         _setParamsHeader({is_classic: true})
     }, [])
 
+    if (phoneToVerify) {
+        return <Container className={'bg-primary py-4'}>
+            <Row className="justify-content-center">
+                <Col xs={12} md={6}>
+                    <p className="text-center text-white mb-4">Te enviamos un código por SMS
+                        al {phoneToVerify.phone_code} {phoneToVerify.phone_number}</p>
+                    <UserMobileActivation
+                        phone_code={phoneToVerify.phone_code}
+                        phone_number={phoneToVerify.phone_number}
+                        onVerified={() => route('packageServices', [package_detail.code])}
+                    />
+                    <div className={"text-center my-3"}>
+                        <IndividualButton type={'button'} variant={'link'} invert
+                                          onClick={() => setPhoneToVerify(null)}>Cambiar mis datos</IndividualButton>
+                    </div>
+                </Col>
+            </Row>
+        </Container>
+    }
+
     return <Formik
         validationSchema={schema}
         onSubmit={(data) => {
@@ -74,13 +95,7 @@ const IndividualRegister = ({
             _register(userComplete)
                 .then(resp => {
                     if (resp.value.success) {
-                        if (resp.value.data.user && resp.value.data.jwt) {
-                            _setUser(resp.value.data.user)
-                            _setJWT(resp.value.data.jwt)
-                            route('packageServices', [package_detail.code])
-                        } else {
-                            throw new Error('Ocurrio un error al registrar el usuario')
-                        }
+                        setPhoneToVerify({phone_code: data.phone_code, phone_number: data.phone_number})
                     }
                     return resp
                 })
@@ -318,8 +333,6 @@ const mapDispatchToProps = dispatch => bindActionCreators({
     _getUser: getUser,
     _setUserIsValidClear: _setUserIsValidClear,
     _register: signIn,
-    _setUser: _setUser,
-    _setJWT: _setJWT,
     _setParamsHeader: _setParamsHeader,
 }, dispatch)
 

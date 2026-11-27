@@ -106,6 +106,8 @@ Prefijo `/api`, límite de 60 req/min. Los controladores del cotizador responden
 
 El JWT viaja como **parámetro `token`**, no en el header `Authorization`. CORS no habilita ese header.
 
+**Registro y sesión.** La validación la decide solo el servidor: setting `register_validation`, por defecto y única opción implementada `sms`. El `verification_type` que mande el cliente se ignora. `register` sin `token` crea el usuario (o reutiliza uno existente **sin modificarlo**; si el celular no coincide con el guardado, responde error sin revelarlo), crea la orden y envía el código. El JWT se entrega solo en `sms/verify`. En la demo, `SMS_DRIVER=mail` con `SMS_DEMO=true` manda el código por email a `SMS_MAIL_TO`.
+
 **Con JWT** (`jwt.auth`)
 
 | Método y ruta | Uso |
@@ -122,8 +124,8 @@ El JWT viaja como **parámetro `token`**, no en el header `Authorization`. CORS 
 
 | Método y ruta | Uso |
 |---|---|
-| `POST register`, `continue_with_user` | Alta o continuación, y creación de la orden pendiente |
-| `POST sms/verify`, `sms/activation` · `GET verify/{code}` | Verificación |
+| `POST register`, `continue_with_user` | Alta o continuación, y creación de la orden pendiente. Sin `token`, `register` envía el código por SMS y **no devuelve JWT** |
+| `POST sms/verify`, `sms/activation` · `GET verify/{code}` | Verificación. `sms/verify` entrega el JWT |
 | `GET stores`, `provinces`, `provinces/{store_code}`, `schools/{term?}`, `brands` | Catálogos |
 | `GET packages/{store_code}`, `products`, `products/{code}` | Oferta |
 | `GET order/show/{code}` | Cotización compartida |
@@ -228,5 +230,5 @@ vendor/bin/phpunit
 
 - ⚠️ `TestCaseWithDatabase` **recrea y siembra la base** (`migrate:fresh --seed`) una vez por ejecución y corre cada test en una transacción que se descarta. Con `APP_ENV=testing` (lo fija `phpunit.xml`) Laravel lee `.env.testing` si existe; si no, `.env`. Verificar a qué base apunta antes de correr: nunca contra datos reales. En Docker, usar un proyecto Compose descartable ([docker.md](docker.md#tests)).
 - `phpunit.xml` activa `tests/Startup` (un `assertTrue(true)`) y `tests/API`. Ambas corren en el CI.
-- `tests/API/UserTest.php` cubre el registro web (`POST /api/register`): validación vacía (422), alta con pedido pendiente, actualización por email repetido y rollback cuando el paquete no tiene la fecha pedida. Usa empresa, provincia y paquete de las semillas (`secundarios`, `buenos-aires`, `bariloche` en agosto del año siguiente).
+- `tests/API/UserTest.php` cubre el registro web (`POST /api/register`) y `sms/verify`: validación vacía (422), alta con pedido pendiente y código SMS sin JWT, `verification_type` del cliente ignorado, email existente sin cambios (y rechazado con otro celular), sesión al validar el código y rollback cuando el paquete no tiene la fecha pedida. El envío se simula con `Sms::shouldReceive`. Usa empresa, provincia y paquete de las semillas (`secundarios`, `buenos-aires`, `bariloche` en agosto del año siguiente).
 - Los tests de la raíz de `tests/` y de `tests/Unit` no pertenecen a ninguna suite y no se mantienen: la cobertura sigue siendo mínima.

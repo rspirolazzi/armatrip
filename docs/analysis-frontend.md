@@ -91,6 +91,8 @@ El layout principal atiende todo; la ruta `individual_tourism.url` (por defecto 
 
 **Turismo Individual** ([_.routing.js](../frontend/src/layouts/IndividualTourism/_.routing.js)), relativo a su URL base: `/`, `/packs/:group`, `/paquete/:code`, `/register`, `/paquete/:code/servicios`, `/seleccion/`, `/confirmacion`, `/reservar`, `/pago`, `/payment-confirmed`, `/checkout`, `/finish`, `/thanks`, `/share/:code`. Las rutas no aplican guardas de acceso (`authorize: () => true`).
 
+**Registro.** En ambos flujos `register` ya no devuelve el JWT: la sesión llega al validar el código SMS (`sms/verify`, `components/UserMobileActivation`). En Turismo Individual, `pages/Individual/Register` muestra ese paso después del formulario y, al validar, sigue a los servicios del paquete (prop `onVerified`).
+
 ## 5. Instalación y ejecución
 
 > Con Docker, validada: [docker.md](docker.md). Lo que sigue es la instalación manual, sin validar.

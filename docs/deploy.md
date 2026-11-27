@@ -81,6 +81,8 @@ Usar siempre `-u www-data` con `artisan`: como root, la caché queda sin permiso
 
 La semilla carga datos de ejemplo y usuarios `@armatrip.test` con la contraseña `SEED_USERS_PASSWORD`: cambiarlos.
 
+**Código SMS del registro.** La web entrega la sesión recién al validar un código por SMS. En la demo, sin Twilio real, usar en `backend.env` `SMS_DRIVER=mail`, `SMS_DEMO=true` y `SMS_MAIL_TO` con la casilla que recibe los códigos (requiere `MAIL_*`). En producción: `SMS_DRIVER=twilio` y `SMS_DEMO=false`.
+
 6. Poner delante un proxy con HTTPS (nginx, Caddy o Traefik). Los contenedores solo escuchan en `127.0.0.1`: backend en `8085` y frontend en `3085`.
 
 ## Actualizar: pull y up

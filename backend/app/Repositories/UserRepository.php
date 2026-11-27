@@ -6,17 +6,13 @@ use App\Exceptions\OrderValidationException;
 use App\Models\Admin\SettingManager;
 use App\Models\Token;
 use App\User;
-use Carbon\Carbon;
 use Hash;
 use Illuminate\Cache\RateLimiter;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Mail;
 use InfyOm\Generator\Common\BaseRepository;
 use Rspirolazzi\Sms\Exceptions\SMSException;
 use Sms;
 use Illuminate\Support\Str;
-use Tymon\JWTAuth\JWTAuth;
-use Validator;
 
 
 /**
@@ -53,16 +49,23 @@ class UserRepository extends BaseRepository
      * @return \App\User
      * @throws \Prettus\Validator\Exceptions\ValidatorException
      */
+    /**
+     * Crea el usuario si el email es nuevo. Un usuario existente no se modifica:
+     * todavía no se probó que quien se registra sea su dueño.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \App\User
+     * @throws OrderValidationException
+     * @throws \Prettus\Validator\Exceptions\ValidatorException
+     */
     public function register(\Illuminate\Http\Request $request)
     {
-        $credentials = $request->only('name', 'email', 'phone_code', 'phone_number', 'isVerified');
+        $credentials = $request->only('name', 'email', 'phone_code', 'phone_number');
 
         $name = trim($credentials['name']);
         $email = trim($credentials['email']);
         $phone_code = trim($credentials['phone_code']);
         $phone_number = trim($credentials['phone_number']);
-        $password = Hash::make(Str::random(8));
-        $is_verified = 0;
 
         $user = $this->findByField('email', $email)->first();
         if (!$user) {
@@ -71,115 +74,44 @@ class UserRepository extends BaseRepository
                     'email' => $email,
                     'phone_code' => $phone_code,
                     'phone_number' => $phone_number,
-                    'password' => Hash::make($password),
-                    'is_verified' => $is_verified,
+                    'password' => Hash::make(Str::random(32)),
+                    'is_verified' => 0,
                 ]
             );
-            Log::info('El usuario se genero con éxito', $user->toArray());
-        } else {
-            $user->name = $name;
-            $user->email = $email;
-            $user->phone_code = $phone_code;
-            $user->phone_number = $phone_number;
-            $user->save();
-            Log::info('El usuario se actualizo con éxito', $user->toArray());
+            Log::info('El usuario se genero con éxito', ['user_id' => $user->id]);
+        } elseif ((string) $user->phone_code !== $phone_code || (string) $user->phone_number !== $phone_number) {
+            // No se revela el celular guardado.
+            throw new OrderValidationException('Este email ya está registrado con otro celular. Ingresá el celular con el que te registraste.');
         }
         return $user;
     }
 
     /**
+     * Tipo de validación del registro. Lo decide solo el servidor; hoy solo existe SMS.
+     *
+     * @return string
+     */
+    public static function verificationType()
+    {
+        return SettingManager::get('register_validation') ?: self::$VERIFICATION_TYPE_SMS;
+    }
+
+    /**
+     * Envía la validación del registro. La sesión se entrega recién al verificar el código.
+     *
      * @param User $user
-     * @param \Illuminate\Http\Request $request
-     * @return array|mixed
+     * @return bool
+     * @throws OrderValidationException
      */
-    public function verification(User $user, \Illuminate\Http\Request $request)
+    public function verification(User $user)
     {
-        $verification_type = SettingManager::get("register_validation", $request->get('verification_type', null));
-        if (!$verification_type) {
-            Log::debug('No se configuro ningun tipo de validacion de registro');
-            return true;
+        $verification_type = self::verificationType();
+        $enabled = SettingManager::get('register_validation_' . self::$VERIFICATION_TYPE_SMS . '_enabled', true);
+        if ($verification_type !== self::$VERIFICATION_TYPE_SMS || !$enabled) {
+            Log::error('La validación de registro configurada no está disponible', ['type' => $verification_type]);
+            throw new OrderValidationException('La validación de registro no está disponible. Por favor, contactanos.');
         }
-        Log::debug('Validacion de registro por ' . $verification_type);
-        $json = false;
-        switch ($verification_type) {
-            case self::$VERIFICATION_TYPE_FACEBOOK:
-                if (SettingManager::get("register_validation_" . self::$VERIFICATION_TYPE_FACEBOOK . "_enabled", false)) {
-                    $json = $this->verificationFacebook($user);
-                }
-                break;
-            case self::$VERIFICATION_TYPE_SMS:
-                if (SettingManager::get("register_validation_" . self::$VERIFICATION_TYPE_SMS . "_enabled", true)) {
-                    $json = $this->verificationSms($user);
-                }
-                break;
-            case self::$VERIFICATION_TYPE_CAPTCHA:
-                if (SettingManager::get("register_validation_" . self::$VERIFICATION_TYPE_CAPTCHA . "_enabled", false)) {
-                    $json = $this->VerificationCaptcha($user, $request);
-                }
-                break;
-            case self::$VERIFICATION_TYPE_EMAIL:
-            default:
-                if (SettingManager::get("register_validation_" . self::$VERIFICATION_TYPE_EMAIL . "_enabled", false)) {
-                    $json = $this->VerificationEmail($user);
-                }
-                break;
-
-        }
-        return $json;
-
-    }
-
-    /**
-     * @param $user
-     * @return array
-     */
-    protected function verificationEmail($user)
-    {
-        Log::debug('Verificación con Email');
-        $verification_code = Token::generateCodeEmail();
-        Token::where('user_id', $user->id)->delete();
-        Token::create([
-            'user_id' => $user->id,
-            'token' => $verification_code,
-            'source' => Token::$_SOURCE_EMAIL,
-        ]);
-        Log::debug('Token creado');
-        $subject = "Por favor confirma tu casilla.";
-
-        Mail::send('email.verify', ['name' => $user->name, 'verification_code' => $verification_code], function ($mail) use ($user, $subject) {
-            $mail->from(getenv('MAIL_FROM_ADDRESS'), "Armatrip");
-            $mail->to($user->email, $user->name);
-            $mail->subject($subject);
-        });
-        return ['success' => true, 'message' => 'Thanks for signing up! Please check your email to complete your registration.'];
-    }
-
-    /**
-     * @param $user
-     * @return array
-     */
-    protected function verificationCaptcha($user, \Illuminate\Http\Request $request)
-    {
-        Log::debug('Verificación con Email');
-        $verification_code = '';
-        Log::debug('Token creado');
-        $subject = "Por favor confirma tu casilla.";
-        return ['success' => true, 'message' => 'Thanks for signing up! Please check your email to complete your registration.'];
-    }
-
-    /**
-     * @param $user
-     * @return array
-     */
-    protected function verificationFacebook($user)
-    {
-        Log::debug('Verificación con Facebook');
-        $token = JWTAuth::fromUser($user);
-        $user->verified_source = Token::$_SOURCE_EMAIL;
-        $user->verified_time = Carbon::now();
-        $user->is_verified = 1;
-        $user->save();
-        return ['success' => true, 'data' => ['token' => $token, 'user' => $user->toArray()]];
+        return $this->verificationSms($user);
     }
 
     /**

@@ -54,43 +54,20 @@ class ApiController extends AppBaseController
     {
         DB::beginTransaction();
         try {
-            $user = null;
-            $json = null;
-            $message = '';
-            $response = [];
             if ($request->token) {
                 $user = JWTAuth::toUser($request->token);
                 $message = 'Tu usuario se registro con éxito';
             } else {
                 $user = $this->userRepository->register($request);
-                $verification_type = SettingManager::get("register_validation", $request->get('verification_type', null));
-                if ($verification_type) {
-                    $json = $this->userRepository->verification($user, $request);
-                    if (!$json) {
-                        throw new OrderValidationException('Ocurrio un error con la validación de usuario. Por favor vuelva a intentarlo');
-                    }
-                    switch ($verification_type) {
-                        case UserRepository::$VERIFICATION_TYPE_FACEBOOK:
-                            $message = 'Facebook no habilitado';
-                            break;
-                        case UserRepository::$VERIFICATION_TYPE_SMS:
-                            $message = 'Tu registro se completo con éxito. En breve recibiras un SMS para activarla';
-                            break;
-                        case UserRepository::$VERIFICATION_TYPE_CAPTCHA:
-                            $message = 'CAPTCHA no habilitado';
-                            break;
-                        case UserRepository::$VERIFICATION_TYPE_EMAIL:
-                            $message = 'EMAIL no habilitado';
-                            break;
-                    }
-                } else {
-                    $message = 'El registro se completo con éxito';
-                    $response['jwt'] = JWTAuth::fromUser($user);
-                    $response['user'] = $user->toArray();
-                }
+                $message = 'Tu registro se completo con éxito. En breve recibiras un SMS para activarla';
             }
             $order = $this->orderRepository->findOrCreate($user, $request);
-            $response = array_merge($order->toArray(), $response);
+
+            // Sin sesión no se entrega el JWT: lo da sms/verify al validar el código.
+            if (!$request->token && !$this->userRepository->verification($user)) {
+                throw new OrderValidationException('Ocurrio un error con la validación de usuario. Por favor vuelva a intentarlo');
+            }
+            $response = $order->toArray();
             DB::commit();
             return $this->sendResponse($response, $message);
         } catch (OrderValidationException $e) {

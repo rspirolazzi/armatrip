@@ -60,7 +60,7 @@ Los `.dockerignore` evitan que los archivos de entorno y los volcados entren en 
 - **Debian 11 sin soporte:** los paquetes salen de `snapshot.debian.org` con fecha fija.
 - **Mercado Pago:** `composer.lock` apunta al repositorio renombrado; mismo commit y versión.
 - **Arranque:** corre `php artisan migrate --force` y `docker/seed.php`, que siembra solo si no hay usuarios.
-- **SMS simulado:** con `SMS_DRIVER=mail` y `APP_ENV=local`, el código llega a Mailpit (http://localhost:8026). En otro entorno ese modo se rechaza; producción usa `twilio`.
+- **SMS simulado:** con `SMS_DRIVER=mail` y `APP_ENV=local`, el código llega a Mailpit (http://localhost:8026). El registro lo exige para dar la sesión. Fuera del entorno local ese modo se rechaza, salvo en una demo con `SMS_DEMO=true` ([deploy.md](deploy.md)); producción usa `twilio`.
 - **Subida de archivos:** `backend/docker/php.ini` admite 10 MB por archivo y 32 MB por formulario; fuera de Docker hay que configurar lo mismo.
 - **`APP_DEBUG=false`** por defecto: no habilitarlo fuera de un entorno local.
 - Sin scheduler: no corren la sincronización IMAP ni los backups.
