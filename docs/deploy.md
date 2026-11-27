@@ -136,7 +136,35 @@ Además:
 | `backend.env` | `APP_URL=https://armatrip.example.com/api/v1`, `APP_WEB_URL=https://armatrip.example.com` y `TRUSTED_PROXIES=*`. `TRUSTED_PROXIES=*` es seguro solo si el backend no es accesible sin pasar por el proxy |
 | Variables de GitHub | `REACT_APP_API_URL=https://armatrip.example.com/api/v1/` (con `/` final) y `APP_BASE_PATH=/`. Se compilan en la imagen: volver a ejecutar *armatrip-frontend* |
 
-Con este esquema el **panel `/admin` no es accesible**: esa ruta la atiende la web, igual que los assets del panel y el logo de los emails (`APP_URL_FIX_IMAGES`). Para usarlo, publicar el backend completo en un subdominio propio (un `location /` hacia el backend) y apuntar `APP_URL_FIX_IMAGES` a ese subdominio, o entrar por un túnel SSH.
+#### Panel en `/admin` del mismo dominio
+
+El panel usa, además de `/admin`, `/login`, `/logout`, `/password/...`, y `asset()` para `/js/` y `/vendor/`. Ninguna choca con la web. Sus CSS, imágenes y el logo de los emails se arman con `APP_URL_FIX_IMAGES`, que sí chocarían con `/css` e `/img` de la web. Por eso van bajo un prefijo propio, `/admin-assets/`, que el proxy quita:
+
+```nginx
+# ^~: gana sobre la regex de abajo, que también empieza con /admin.
+location ^~ /admin-assets/ {
+    set $backend http://127.0.0.1:8085;
+    rewrite ^/admin-assets/(.*)$ /$1 break;
+    proxy_pass $backend;
+    proxy_set_header Host              $host;
+    proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+}
+
+location ~ ^/(admin(/|$)|login$|logout$|password/|js/|vendor/) {
+    set $backend http://127.0.0.1:8085;
+    proxy_pass $backend;
+    proxy_set_header Host              $host;
+    proxy_set_header X-Real-IP         $remote_addr;
+    proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_set_header X-Forwarded-Host  $host;
+    proxy_set_header X-Forwarded-Port  443;
+    client_max_body_size 50m;   # imágenes y videos del panel
+}
+```
+
+En `backend.env`: `APP_URL_FIX_IMAGES=https://armatrip.example.com/admin-assets`, y recrear el contenedor. `/register` sigue en la web: el alta pública de Laravel no se publica.
 
 Para probarlo: `nginx -t`, recargar nginx y verificar que `curl https://armatrip.example.com/api/v1/provinces` devuelva JSON.
 
