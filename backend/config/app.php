@@ -179,10 +179,6 @@ return [
          */
         Rspirolazzi\Coupons\CouponsServiceProvider::class,
         /**
-         * Artisan Web
-         */
-        Recca0120\Terminal\TerminalServiceProvider::class,
-        /**
          * SMS
          */
         Rspirolazzi\Sms\SmsServiceProvider::class,
@@ -198,10 +194,6 @@ return [
          * Settings
          */
         Akaunting\Setting\Provider::class,
-        /**
-         * Recca0120 Terminal
-         */
-        Recca0120\Terminal\TerminalServiceProvider::class,
         /**
          * Logs
          */

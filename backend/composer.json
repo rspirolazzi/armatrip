@@ -65,6 +65,7 @@
     "extra": {
         "laravel": {
             "dont-discover": [
+                "recca0120/terminal"
             ]
         }
     },

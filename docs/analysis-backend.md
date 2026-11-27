@@ -39,7 +39,7 @@ Versiones **instaladas según `composer.lock` / `package-lock.json`**.
 | Settings | akaunting/setting | 1.1.2 |
 | Tags | rtconner/laravel-tagging | 4.0.2 |
 | HTTP / fechas | guzzlehttp/guzzle · nesbot/carbon | 6.5.5 · 1.26.6 |
-| Operación | rap2hpoutre/laravel-log-viewer · recca0120/terminal | 1.6.0 · 1.8.0 |
+| Operación | rap2hpoutre/laravel-log-viewer · recca0120/terminal | 1.6.0 · 1.8.0 (terminal web desactivada: sin provider y en `dont-discover`) |
 | Testing | phpunit/phpunit · mockery | 7.5.20 · 1.3.1 |
 
 **Por qué ese rango de PHP:** `composer.json` pide `>=7.1.3`, pero el lock restringe más: varios paquetes `symfony/*` exigen `>=7.2.5` y `pusher-php-server` exige `<7.4`.

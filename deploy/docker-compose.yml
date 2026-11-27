@@ -35,7 +35,7 @@ services:
     # Tienen prioridad sobre backend.env.
     environment:
       APP_ENV: production
-      APP_DEBUG: "false" # true habilitaría la terminal web /sys-terminal
+      APP_DEBUG: "false"
       DB_CONNECTION: mysql
       DB_HOST: armatrip-mysql
       DB_PORT: "3306"
