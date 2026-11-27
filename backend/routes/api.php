@@ -12,9 +12,6 @@ use Illuminate\Http\Request;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-Route::group(['prefix' => 'admin', 'middleware' => ['cors']], function () {
-    Route::resource('orders', 'Admin\OrderAPIAdminController');
-});
 Route::group(['middleware' => ['jwt.auth', 'cors']], function () {
     Route::post('precheckout', 'OrderAPIController@precheckout');
     Route::post('checkout', 'OrderAPIController@checkout');

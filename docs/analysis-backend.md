@@ -130,7 +130,8 @@ El JWT viaja como **parámetro `token`**, no en el header `Authorization`. CORS 
 | `POST contact/country` | Contacto |
 | `GET notifications`, `POST notifications/uri` | Mensajes emergentes |
 | `GET config`, `POST log/save` | Configuración y logs del cliente |
-| `/admin/orders` (resource) | Reservas. Solo `index` y `show` están implementados |
+
+Las reservas se consultan solo desde el panel (`/admin/orders`, con sesión y permisos). La versión API pública se eliminó en noviembre de 2026 porque exponía los datos sin autenticación.
 
 ## 6. Panel, procesos e integraciones
 
