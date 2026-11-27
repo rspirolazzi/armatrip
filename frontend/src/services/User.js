@@ -91,20 +91,6 @@ class UserService extends Base {
         }
     }
 
-    /**
-     *
-     * @returns {PromiseLike<T> | Promise<T>}
-     */
-    getAddresses() {
-        try {
-            return this.getWithJWT('address', {orderBy: 'created_at', sortedBy: 'desc'})
-                .then(resp => resp)
-        } catch (e) {
-            //console.error(e)
-            throw e
-        }
-    }
-
     update(data) {
         try {
             return this.postWithJWT('update', data)
@@ -153,16 +139,6 @@ class UserService extends Base {
                     setJWT(resp.data.token)
                     return resp
                 })
-        } catch (e) {
-            //console.error(e)
-            throw e
-        }
-    }
-
-    getOrders() {
-        try {
-            return this.getWithJWT('order', {orderBy: 'created_at', sortedBy: 'desc'})
-                .then(resp => resp.data)
         } catch (e) {
             //console.error(e)
             throw e

@@ -85,6 +85,8 @@ La semilla carga datos de ejemplo y usuarios `@armatrip.test` con la contraseña
 
 6. Poner delante un proxy con HTTPS (nginx, Caddy o Traefik). Los contenedores solo escuchan en `127.0.0.1`: backend en `8085` y frontend en `3085`.
 
+**Cabeceras de la web.** El frontend ya envía cabeceras de seguridad y una CSP en modo `Content-Security-Policy-Report-Only` ([security-headers.conf](../frontend/docker/security-headers.conf)). Recorrer los dos flujos en la demo, incluido el pago de prueba, con la consola abierta. Si no aparecen violaciones, cambiar el nombre de la cabecera a `Content-Security-Policy` para que bloquee. La sesión web dura `JWT_TTL` minutos (por defecto 240).
+
 ## Actualizar: pull y up
 
 Es lo que ejecuta el workflow; sirve igual a mano, desde `DEPLOY_PATH`:

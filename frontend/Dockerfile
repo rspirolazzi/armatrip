@@ -25,7 +25,7 @@ ARG REACT_APP_INSTAGRAM_URL
 COPY . .
 RUN test -n "$REACT_APP_API_URL" || { echo "Falta el build-arg REACT_APP_API_URL" >&2; exit 1; }
 RUN base="${APP_BASE_PATH%/}" \
-    && PUBLIC_URL="${base:-/}" REACT_APP_API_BASE_PATH="$base" \
+    && PUBLIC_URL="${base:-/}" REACT_APP_API_BASE_PATH="$base" INLINE_RUNTIME_CHUNK=false \
        REACT_APP_VERSION="$(node -p "require('./package.json').version")" \
        ./node_modules/.bin/react-scripts build
 
@@ -34,6 +34,7 @@ FROM nginx:1.27-alpine AS prod
 ARG APP_BASE_PATH=/cotizador
 COPY --from=build /app/build /tmp/build
 COPY docker/nginx.conf /tmp/nginx.conf
+COPY docker/security-headers.conf /etc/nginx/snippets/security-headers.conf
 # Con ruta base, "/" redirige a ella.
 RUN base="${APP_BASE_PATH%/}" \
     && mkdir -p "/usr/share/nginx/html$base" \

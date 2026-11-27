@@ -33,7 +33,8 @@ return [
     |
     */
 
-    'ttl' => 24*60,
+    // Minutos. Corto porque el token vive en localStorage del navegador.
+    'ttl' => (int) env('JWT_TTL', 240),
 
     /*
     |--------------------------------------------------------------------------

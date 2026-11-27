@@ -41,32 +41,7 @@ export default class Base {
         return this.processResponse(axios.post(url, this.paramsStringify(params)))
     }
 
-    putWithJWT(uri, params = {}) {
-        let url = this._URL + uri
-        if (this.XDEBUG_SESSION_START) {
-            url += '?XDEBUG_SESSION_START=' + this.XDEBUG_SESSION_START
-        }
-        params.token = getJWT()
-        return this.processResponse(axios.put(url, this.paramsStringify(params)))
-    }
-
-    delWithJWT(uri, params = {}) {
-        let url = this._URL + uri
-        if (this.XDEBUG_SESSION_START) {
-            url += '?XDEBUG_SESSION_START=' + this.XDEBUG_SESSION_START
-        }
-        params.token = getJWT()
-        return this.processResponse(axios.delete(url))
-    }
-
-    getWithJWT(uri, params = {}) {
-        let url = this._URL + uri
-        if (this.XDEBUG_SESSION_START) {
-            url += '?XDEBUG_SESSION_START=' + this.XDEBUG_SESSION_START
-        }
-        params.token = getJWT()
-        return this.processResponse(axios.get(url, {params}))
-    }
+    // El JWT viaja solo en el cuerpo de un POST: nunca en la URL, que queda en logs e historial.
 
     post(uri, params = {}) {
         let url = this._URL + uri

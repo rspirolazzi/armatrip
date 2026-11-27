@@ -67,7 +67,9 @@ frontend/
 
 **Estado.** Cada dominio tiene tipos, reducer, acciones y selectores: `user`, `store`, `province`, `school`, `package`, `product`, `order`, `coupon`, `brand`, `configuration`, `notification`, `core`. `user` persiste en `localStorage`; el resto en `sessionStorage`. `webCart` existe pero no está en el reducer raíz (resto de otro producto).
 
-**API.** `services/Base.js` envía formularios urlencoded con axios; el JWT se guarda en `localStorage` (`ACCESS_TOKEN_SESSION`) y viaja como parámetro `token`. Se espera `success: true` en la respuesta.
+**API.** `services/Base.js` envía formularios urlencoded con axios; el JWT se guarda en `localStorage` (`ACCESS_TOKEN_SESSION`) y viaja como parámetro `token`, solo en el cuerpo de un POST (`postWithJWT`): no hay métodos que lo pongan en la URL. Dura `JWT_TTL` minutos (4 h por defecto). Se espera `success: true` en la respuesta.
+
+**Cabeceras.** La imagen `prod` sirve con nginx `X-Content-Type-Options`, `Referrer-Policy`, `X-Frame-Options` y una CSP en modo Report-Only ([docker/security-headers.conf](../frontend/docker/security-headers.conf)). El build usa `INLINE_RUNTIME_CHUNK=false` para no necesitar scripts en línea; `public/index.html` no debe sumarlos.
 
 **Middlewares.** Manejan loading global, toasts y el envío de errores a `log/save`. **Filtran acciones que contienen la cadena `armatrip`** (prefijo de los ducks).
 
