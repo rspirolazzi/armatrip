@@ -166,6 +166,8 @@ location ~ ^/(admin(/|$)|login$|logout$|password/|js/|vendor/) {
 
 En `backend.env`: `APP_URL_FIX_IMAGES=https://armatrip.example.com/admin-assets`, y recrear el contenedor. `/register` sigue en la web: el alta pública de Laravel no se publica.
 
+La web es una PWA: su service worker responde `index.html` a las navegaciones sin pasar por el servidor. La imagen del frontend excluye de ese comportamiento `/admin`, `/admin-assets`, `/login`, `/logout`, `/password` y `/api` ([Dockerfile](../frontend/Dockerfile)). Un navegador que ya tenía instalado el service worker anterior sigue mostrando la web en `/admin` hasta que se actualiza: cerrar todas las pestañas del sitio, o en DevTools → *Application → Service workers → Unregister*. Para comprobar sin caché: `curl -sI https://armatrip.example.com/admin` debe responder `302` hacia `/login`.
+
 Para probarlo: `nginx -t`, recargar nginx y verificar que `curl https://armatrip.example.com/api/v1/provinces` devuelva JSON.
 
 ## Actualizar: pull y up

@@ -32,6 +32,12 @@ RUN base="${APP_BASE_PATH%/}" \
     && PUBLIC_URL="${base:-/}" REACT_APP_API_BASE_PATH="$base" INLINE_RUNTIME_CHUNK=false \
        REACT_APP_VERSION="$(node -p "require('./package.json').version")" \
        ./node_modules/.bin/react-scripts build
+# El service worker de CRA responde index.html a toda navegación sin punto; así el panel
+# y la API del mismo dominio nunca llegarían al servidor. Se excluyen sus rutas y el build
+# falla si cambia el formato del archivo generado.
+# Workbox compara ruta + query string: de ahí el "?".
+RUN sed -i 's#blacklist: \[#blacklist: [/^[/](admin|admin-assets|login|logout|password|api)([/?]|$)/,#' build/service-worker.js \
+    && grep -q 'admin-assets' build/service-worker.js
 # version.json: lo lee el panel para mostrar qué versión de la web está publicada.
 RUN node -e "const e = process.env; require('fs').writeFileSync('build/version.json', JSON.stringify({ \
         version: require('./package.json').version, \
