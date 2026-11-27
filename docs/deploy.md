@@ -1,6 +1,6 @@
 # Armatrip: imágenes y despliegue
 
-> **Todavía no está listo para producción.** Hay hallazgos de seguridad críticos sin resolver: no exponer el servidor a internet sin revisarlos. Por eso el paso al servidor viene apagado.
+> **Servidor demo, no producción.** Cada push a `main` actualiza el servidor demo. Las vulnerabilidades del código se corrigieron en noviembre de 2026; antes de producción faltan las acciones manuales sobre los repositorios anteriores (rotar claves) y la modernización de dependencias.
 >
 > Estos pasos **no se validaron de punta a punta** (ver [Qué falta probar](#qué-falta-probar)).
 
@@ -23,7 +23,7 @@ Tags: `latest` y `sha-<commit>`.
 |---|---|
 | Verificar | Cada push y pull request a `main` que toque esa parte |
 | Publicar la imagen | Solo desde `main` (push o ejecución manual) |
-| `pull` y `up` en el servidor | Además, solo si la variable `DEPLOY_ENABLED` es `true` |
+| `pull` y `up` en el servidor demo | Después de publicar, siempre |
 
 ## Configurar GitHub
 
@@ -34,7 +34,6 @@ En *Settings → Secrets and variables → Actions*.
 | Variable | `REACT_APP_API_URL` | **Obligatoria para publicar el frontend.** URL pública de la API con `/` final, p. ej. `https://api.example.com/api/` |
 | Variable | `APP_BASE_PATH` | Ruta de la web. Por defecto `/cotizador`; `/` para la raíz |
 | Variable | Resto de `REACT_APP_*` de [`frontend/.env.example`](../frontend/.env.example) | Opcionales y **públicas**: quedan visibles en el navegador |
-| Variable | `DEPLOY_ENABLED` | `true` para activar el paso al servidor |
 | Variable | `DEPLOY_PATH` | Carpeta del servidor con `docker-compose.yml` |
 | Secreto | `DROPLET_IP`, `DROPLET_USER` | Dirección y usuario SSH |
 | Secreto | `SSH_PRIVATE_KEY` | Clave privada exclusiva para el despliegue |
@@ -124,3 +123,4 @@ Sin probar:
 - La corrección de permisos (`-u www-data`) y el healthcheck sobre `/api/provinces`.
 - Persistencia al recrear el contenedor, `AUTO_MIGRATE=true` y URLs `https` detrás de un proxy.
 - Los workflows en GitHub, la publicación en `ghcr.io` y el despliegue por SSH.
+- El código SMS por email en la demo (`SMS_DEMO=true`) y la CSP en los dos flujos, incluido el pago de prueba.

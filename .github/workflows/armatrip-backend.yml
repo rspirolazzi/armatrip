@@ -1,5 +1,5 @@
 # Backend: verifica siempre; desde main publica ghcr.io/<dueño>/armatrip-backend y,
-# con la variable DEPLOY_ENABLED=true, hace pull y up en el servidor (docs/deploy.md).
+# después hace pull y up en el servidor demo (docs/deploy.md).
 name: armatrip-backend
 
 on:
