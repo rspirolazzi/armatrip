@@ -56,7 +56,12 @@ return [
     'webUrl' => env('APP_WEB_URL', 'http://localhost'),
     // Base de los assets del panel y los emails.
     'url_fix_images' => env('APP_URL_FIX_IMAGES'),
-    'version' => env('APP_VERSION'),
+    // Build de GitHub Actions: lo fija el Dockerfile (etapa prod). Vacío en desarrollo.
+    'build' => [
+        'number' => env('APP_BUILD_NUMBER'),
+        'sha' => env('APP_BUILD_SHA'),
+        'date' => env('APP_BUILD_DATE'),
+    ],
 
     /*
     |--------------------------------------------------------------------------

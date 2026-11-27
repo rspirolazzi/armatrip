@@ -131,7 +131,7 @@ El JWT viaja como **parámetro `token`**, no en el header `Authorization`. CORS 
 | `GET order/show/{code}` | Cotización compartida |
 | `POST contact/country` | Contacto |
 | `GET notifications`, `POST notifications/uri` | Mensajes emergentes |
-| `GET config`, `POST log/save` | Configuración y logs del cliente. `log/save` acepta 10 por minuto e IP (el resto se descarta sin error), recorta a 500/5000 caracteres y quita saltos de línea |
+| `GET config`, `POST log/save` | Configuración (incluye `build` del backend: `number`, `sha`, `date`) y logs del cliente. `log/save` acepta 10 por minuto e IP (el resto se descarta sin error), recorta a 500/5000 caracteres y quita saltos de línea |
 
 Las reservas se consultan solo desde el panel (`/admin/orders`, con sesión y permisos). La versión API pública se eliminó en noviembre de 2026 porque exponía los datos sin autenticación.
 

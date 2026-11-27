@@ -129,6 +129,13 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      # Build que se muestra en los footers: número de ejecución, commit corto y fecha UTC.
+      - name: Datos del build
+        id: build
+        run: |
+          echo "sha=${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
+          echo "date=$(date -u +%Y-%m-%d)" >> "$GITHUB_OUTPUT"
+
       - name: Tags
         id: meta
         uses: docker/metadata-action@v6
@@ -148,6 +155,10 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha,scope=backend-prod
           cache-to: type=gha,scope=backend-prod,mode=max
+          build-args: |
+            BUILD_NUMBER=${{ github.run_number }}
+            BUILD_SHA=${{ steps.build.outputs.sha }}
+            BUILD_DATE=${{ steps.build.outputs.date }}
 
   deploy:
     name: Pull y up en el servidor

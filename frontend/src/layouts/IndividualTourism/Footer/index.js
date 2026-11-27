@@ -7,6 +7,7 @@ import Newsletter from "../../../components/Newsletter";
 import BannerCreditCard from "../../../components/Individual/BannerCreditCard";
 import {AGENCY_LICENSE, CONTACT_ADDRESS, CONTACT_EMAIL, CONTACT_PHONE} from "../../../common/constants";
 import assist_white from "../img/asisst-white.png";
+import AppVersion from "../../../components/AppVersion";
 
 const Footer = ({
                     is_classic = false,
@@ -38,6 +39,7 @@ const Footer = ({
             </Row>
         </Container>
     </div>
+    <AppVersion/>
 </>
 const mapStateToProps = state => ({})
 

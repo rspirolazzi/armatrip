@@ -125,7 +125,8 @@ Abre `http://localhost:3080` (el README original dice 3000). El script `start` u
 
 | Variable | Uso |
 |---|---|
-| `REACT_APP_NAME`, `REACT_APP_VERSION` | Título y versión |
+| `REACT_APP_NAME`, `REACT_APP_VERSION` | Título y versión (en la imagen, `version` de `package.json`) |
+| `REACT_APP_BUILD_NUMBER`, `REACT_APP_BUILD_SHA`, `REACT_APP_BUILD_DATE` | Build de GitHub Actions; vacías en local (se muestra `dev`) |
 | `REACT_APP_API_URL` | URL de la API, con `/` final (por defecto `//armatrip.test/api/`) |
 | `REACT_APP_API_BASE_PATH` | Prefijo del router y de imágenes |
 | `REACT_APP_API_ABSOLUTE_URL` | Base para compartir (opcional; usa el origen actual) |

@@ -31,6 +31,11 @@ RUN mkdir -p storage/app/public storage/framework/cache storage/framework/sessio
     && composer clear-cache \
     && php artisan package:discover \
     && chown -R www-data:www-data storage bootstrap/cache
+# Build de GitHub Actions (número, commit corto y fecha); se muestra en el panel y en la web. Al final, para no invalidar la caché de las capas anteriores.
+ARG BUILD_NUMBER=
+ARG BUILD_SHA=
+ARG BUILD_DATE=
+ENV APP_BUILD_NUMBER=$BUILD_NUMBER APP_BUILD_SHA=$BUILD_SHA APP_BUILD_DATE=$BUILD_DATE
 ENTRYPOINT ["app-entrypoint"]
 CMD ["apache2-foreground"]
 

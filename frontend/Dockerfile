@@ -22,12 +22,21 @@ ARG REACT_APP_CONTACT_ADDRESS
 ARG REACT_APP_AGENCY_LICENSE
 ARG REACT_APP_FACEBOOK_URL
 ARG REACT_APP_INSTAGRAM_URL
+# Build de GitHub Actions (número, commit corto y fecha); vacío en compilaciones locales.
+ARG REACT_APP_BUILD_NUMBER=
+ARG REACT_APP_BUILD_SHA=
+ARG REACT_APP_BUILD_DATE=
 COPY . .
 RUN test -n "$REACT_APP_API_URL" || { echo "Falta el build-arg REACT_APP_API_URL" >&2; exit 1; }
 RUN base="${APP_BASE_PATH%/}" \
     && PUBLIC_URL="${base:-/}" REACT_APP_API_BASE_PATH="$base" INLINE_RUNTIME_CHUNK=false \
        REACT_APP_VERSION="$(node -p "require('./package.json').version")" \
        ./node_modules/.bin/react-scripts build
+# version.json: lo lee el panel para mostrar qué versión de la web está publicada.
+RUN node -e "const e = process.env; require('fs').writeFileSync('build/version.json', JSON.stringify({ \
+        version: require('./package.json').version, \
+        build: {number: e.REACT_APP_BUILD_NUMBER || null, sha: e.REACT_APP_BUILD_SHA || null, date: e.REACT_APP_BUILD_DATE || null} \
+    }))"
 
 # Producción (--target prod): archivos estáticos con nginx.
 FROM nginx:1.27-alpine AS prod

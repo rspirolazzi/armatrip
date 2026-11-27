@@ -15,6 +15,15 @@ Ver también: [Docker local](docker.md) · [Backend](analysis-backend.md) · [Fr
 
 Tags: `latest` y `sha-<commit>`.
 
+**Versiones visibles.** Cada imagen lleva el build de GitHub Actions: número de ejecución del workflow, commit corto y fecha UTC (sin CI, `dev`). Se muestran en los dos footers:
+
+| Dónde | Qué muestra | De dónde sale |
+|---|---|---|
+| Web (ambos flujos) | `Web 4.1.10 · build 57 (abc1234, 27/11/2026) · API build 42 (…)` | Versión de `frontend/package.json` y build compilados en la imagen; el de la API llega en `GET /api/config` |
+| Panel | `API build 42 (…) · Web 4.1.10 · build 57 (…)` | `config('app.build')` y `version.json` de la web (`APP_WEB_URL/version.json`), leído por el servidor con caché de 10 minutos. Si no responde: "Web: no disponible" |
+
+`version.json` se publica junto a la web (`<APP_BASE_PATH>/version.json`).
+
 ## Qué hacen los workflows
 
 [`armatrip-backend.yml`](../.github/workflows/armatrip-backend.yml) y [`armatrip-frontend.yml`](../.github/workflows/armatrip-frontend.yml):

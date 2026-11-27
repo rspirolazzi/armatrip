@@ -1,5 +1,6 @@
 import React from 'react'
 import {Col, Row} from "react-bootstrap"
+import AppVersion from "../AppVersion"
 
 const Footer = () => <>
     <div className="d-block d-sm-none">
@@ -29,5 +30,6 @@ const Footer = () => <>
             </Col>
         </Row>
     </footer>
+    <AppVersion/>
 </>
 export default Footer

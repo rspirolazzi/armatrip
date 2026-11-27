@@ -109,6 +109,7 @@
         <div class="content-wrapper">
             @yield('content')
         </div>
+        @include('layouts.partials.version')
     </div>
 
 

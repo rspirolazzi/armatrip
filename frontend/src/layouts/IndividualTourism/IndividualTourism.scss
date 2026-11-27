@@ -362,3 +362,16 @@ body.layout-individualtourism.page-seleccion #assist {
   }
 
 }
+// Versiones desplegadas (components/AppVersion).
+body.layout-individualtourism {
+  @import "../../styles/brand";
+
+  .app-version {
+    padding: 0.5rem 1rem;
+    font-size: 0.75rem;
+    text-align: center;
+    color: $noche;
+    background-color: $nieve;
+    border-top: 1px solid $bruma;
+  }
+}

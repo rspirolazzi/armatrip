@@ -103,3 +103,16 @@
     background: $noche;
   }
 }
+// Versiones desplegadas (components/AppVersion).
+.layout-main {
+  @import "../../styles/brand";
+
+  .app-version {
+    padding: 0.5rem 1rem;
+    font-size: 0.75rem;
+    text-align: center;
+    color: $noche;
+    background-color: $nieve;
+    border-top: 1px solid $bruma;
+  }
+}

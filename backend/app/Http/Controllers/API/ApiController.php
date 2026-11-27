@@ -267,7 +267,8 @@ class ApiController extends AppBaseController
 
     public function config(Request $request)
     {
-        $config = [];
+        // Build del backend, para mostrarlo en el footer de la web.
+        $config = ['build' => config('app.build')];
         try {
             $config['coupon'] = [
                 'isVisible' => Coupon::available()->count() > 0,

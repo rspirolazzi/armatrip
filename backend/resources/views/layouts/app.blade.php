@@ -25,7 +25,7 @@
 
     <!-- Ionicons -->
     <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
-    <link rel="stylesheet" href="{!! config('app.url_fix_images') !!}/css/admin.css?t=20261125d">
+    <link rel="stylesheet" href="{!! config('app.url_fix_images') !!}/css/admin.css?t=20261127a">
     <link rel="stylesheet" href="{!! config('app.url_fix_images') !!}/css/comanda.css?t=20261125d">
     <!-- Theme style -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/2.4.2/css/AdminLTE.min.css">
@@ -103,12 +103,8 @@
                                     <p>
                                        Nombre: {!! config('app.name') !!}
                                     </p>
-                                    <p>
-                                       Versión: {!! config('app.version') !!}
-                                    </p>
-                                    <p>
-                                       Versión: {!! config('app.version') !!}
-                                    </p>
+                                    <p>{{ \App\Support\BuildInfo::api() }}</p>
+                                    <p>{{ \App\Support\BuildInfo::web() }}</p>
                                 </li>
                             </ul>
                         </li>
@@ -133,6 +129,7 @@
         <div class="content-wrapper">
             @yield('content')
         </div>
+        @include('layouts.partials.version')
     </div>
     <script src="{!! config('app.url_fix_images') !!}/js/app.js"></script>
 
