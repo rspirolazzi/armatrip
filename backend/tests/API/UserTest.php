@@ -121,7 +121,7 @@ class UserTest extends TestCaseWithDatabase
     public function test_register_existing_email_with_other_phone_fails()
     {
         $this->expectSms(0);
-        $existing = $this->fakeUserData(['phone_number' => '44445555']);
+        $existing = $this->fakeUserData(['phone_number' => '44445555', 'password' => bcrypt('secreto-de-prueba')]);
         User::create($existing);
 
         $data = $this->registrationData(['email' => $existing['email'], 'phone_number' => '66667777']);

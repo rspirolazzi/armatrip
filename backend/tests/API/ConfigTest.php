@@ -3,13 +3,17 @@
 namespace Tests\API;
 
 use App\Support\BuildInfo;
+use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Tests\TestCaseWithDatabase;
 
 /**
  * GET /api/config incluye el build del backend para el footer de la web.
+ * Sin middleware: CORS llama a header() y en consola falla si PHPUnit ya imprimió salida.
  */
 class ConfigTest extends TestCaseWithDatabase
 {
+    use WithoutMiddleware;
+
     public function test_config_includes_build()
     {
         config(['app.build' => ['number' => '42', 'sha' => 'abc1234', 'date' => '2026-11-27']]);
