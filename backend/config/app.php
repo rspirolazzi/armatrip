@@ -54,6 +54,9 @@ return [
 
     'url' => env('APP_URL', 'http://localhost'),
     'webUrl' => env('APP_WEB_URL', 'http://localhost'),
+    // Base de los assets del panel y los emails.
+    'url_fix_images' => env('APP_URL_FIX_IMAGES'),
+    'version' => env('APP_VERSION'),
 
     /*
     |--------------------------------------------------------------------------

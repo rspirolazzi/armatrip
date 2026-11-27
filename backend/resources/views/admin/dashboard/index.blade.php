@@ -211,7 +211,7 @@
     </section>
 @endsection
 @section('scripts')
-    <script src="{!! env('APP_URL_FIX_IMAGES') !!}/js/chart.js"></script>
+    <script src="{!! config('app.url_fix_images') !!}/js/chart.js"></script>
     <script type="text/javascript">
         // Get context with jQuery - using jQuery's .get() method.
         var salesChartCanvas = $('#salesChart').get(0).getContext('2d');

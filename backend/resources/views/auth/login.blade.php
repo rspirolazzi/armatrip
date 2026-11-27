@@ -32,7 +32,7 @@
     <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
     <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
-    <link rel="stylesheet" href="{!! env('APP_URL_FIX_IMAGES') !!}/css/auth.css?t=20261125b">
+    <link rel="stylesheet" href="{!! config('app.url_fix_images') !!}/css/auth.css?t=20261125b">
     <style>
         
     </style>
@@ -42,7 +42,7 @@
     <div class="container-fluid">
         <div class="navbar-header">
             <a class="navbar-brand" href="#">
-                <img alt="Armatrip" src="{!! env('APP_URL_FIX_IMAGES') !!}/img/logo-negativo.svg">
+                <img alt="Armatrip" src="{!! config('app.url_fix_images') !!}/img/logo-negativo.svg">
             </a>
         </div>
     </div>

@@ -33,7 +33,7 @@ class ReservationOk extends Mailable
     {
         return $this->view('email.email')->with([
             'reservation'=>$this->reservation,
-            'url'=>env('APP_URL'),
+            'url'=>config('app.url'),
         ]);
     }
 }

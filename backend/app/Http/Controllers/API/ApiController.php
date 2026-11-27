@@ -153,10 +153,10 @@ class ApiController extends AppBaseController
             $user->save();
             $check->delete();
             Log::info('La cuenta se verifico con éxito', ['user_id' => $user->id]);
-            return redirect(env('APP_WEB_URL') . '/#?message=Tu cuenta se verifico con éxito.&type=success&code=' . $verification_code);
+            return redirect(config('app.webUrl') . '/#?message=Tu cuenta se verifico con éxito.&type=success&code=' . $verification_code);
         }
         Log::error('El código de verificacion no existe o ya fue verificado');
-        return redirect(env('APP_WEB_URL') . '/#?message=Ocurrio un error al intenar verificar tu cuenta.&type=error');
+        return redirect(config('app.webUrl') . '/#?message=Ocurrio un error al intenar verificar tu cuenta.&type=error');
         return $this->sendError("Verification code is invalid.", Errors::E_VERIFICATION_USER);
     }
 
@@ -274,8 +274,8 @@ class ApiController extends AppBaseController
                 'length' => config('coupons.code_length', 8),
             ];
             $config['payment'] = [
-                'isEnabled' => (bool)SettingManager::get('mp_enabled', env('MP_ENABLED', false)),
-                'isTest' => (bool)SettingManager::get('mp_enabled_test', env('MP_ENABLED_TEST', false)),
+                'isEnabled' => (bool)SettingManager::get('mp_enabled', config('armatrip.mercadopago.enabled')),
+                'isTest' => (bool)SettingManager::get('mp_enabled_test', (config('armatrip.mercadopago.enabled_test') ?? false)),
             ];
             $turismo_individual = SettingManager::get('store_code_individual', 'turismo_individual');
             $turismo_individual_url = SettingManager::get('store_code_individual', '/turismo-individual');

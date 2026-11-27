@@ -76,8 +76,20 @@ jobs:
               xargs -0 -n1 -P4 php -l > /tmp/lint.log 2>&1 || { grep -v "^No syntax errors" /tmp/lint.log; exit 1; }
           '
 
-      - name: Cargar rutas y controladores
-        run: docker compose exec -T backend php artisan route:list > /dev/null
+      # Con config:cache, env() devuelve null fuera de config/.
+      - name: Sin env() fuera de config
+        run: |
+          if grep -rnE '\b(get)?env\(' backend/app backend/packages backend/resources backend/routes --include='*.php' | grep -v '/config/'; then
+            echo "::error::Usar config() en lugar de env() fuera de config/ (AGENTS.md)."
+            exit 1
+          fi
+
+      # Carga rutas y controladores con la configuración cacheada, como en producción.
+      # Se limpia siempre: con caché, PHPUnit ignoraría las variables de phpunit.xml.
+      - name: Cargar rutas y controladores (config:cache)
+        run: >-
+          docker compose exec -T backend sh -c
+          'php artisan config:cache > /dev/null && php artisan route:list > /dev/null; status=$?; php artisan config:clear > /dev/null; exit $status'
 
       # La suite API recrea y siembra esta base descartable; por eso va al final.
       - name: Tests (PHPUnit)

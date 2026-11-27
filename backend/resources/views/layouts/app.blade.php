@@ -25,13 +25,13 @@
 
     <!-- Ionicons -->
     <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
-    <link rel="stylesheet" href="{!! env('APP_URL_FIX_IMAGES') !!}/css/admin.css?t=20261125d">
-    <link rel="stylesheet" href="{!! env('APP_URL_FIX_IMAGES') !!}/css/comanda.css?t=20261125d">
+    <link rel="stylesheet" href="{!! config('app.url_fix_images') !!}/css/admin.css?t=20261125d">
+    <link rel="stylesheet" href="{!! config('app.url_fix_images') !!}/css/comanda.css?t=20261125d">
     <!-- Theme style -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/2.4.2/css/AdminLTE.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/2.4.2/css/skins/_all-skins.min.css">
-    <link rel="stylesheet" href="{!! env('APP_URL_FIX_IMAGES') !!}/vendor/tagsinput/tagsinput.css">
-    <link rel="stylesheet" href="{!! env('APP_URL_FIX_IMAGES') !!}/vendor/dropzone-5.7.0/dist/min/dropzone.min.css">
+    <link rel="stylesheet" href="{!! config('app.url_fix_images') !!}/vendor/tagsinput/tagsinput.css">
+    <link rel="stylesheet" href="{!! config('app.url_fix_images') !!}/vendor/dropzone-5.7.0/dist/min/dropzone.min.css">
     <link rel="stylesheet" href="http://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     
     @yield('css')
@@ -43,8 +43,8 @@
         <!-- Main Header -->
         <header class="main-header">
             <!-- Logo -->
-            <a href="{!! env('APP_URL_FIX_IMAGES') !!}/admin" class="logo">
-                <img src="{!! env('APP_URL_FIX_IMAGES') !!}/img/logo-negativo.svg" alt="Armatrip"/>
+            <a href="{!! config('app.url_fix_images') !!}/admin" class="logo">
+                <img src="{!! config('app.url_fix_images') !!}/img/logo-negativo.svg" alt="Armatrip"/>
             </a>
             <!-- Header Navbar -->
             <nav class="navbar navbar-static-top">
@@ -101,13 +101,13 @@
                                 <!-- The user image in the menu -->
                                 <li class="user-header">
                                     <p>
-                                       Nombre: {!! env('APP_NAME') !!}
+                                       Nombre: {!! config('app.name') !!}
                                     </p>
                                     <p>
-                                       Versión: {!! env('APP_VERSION') !!}
+                                       Versión: {!! config('app.version') !!}
                                     </p>
                                     <p>
-                                       Versión: {!! env('APP_VERSION') !!}
+                                       Versión: {!! config('app.version') !!}
                                     </p>
                                 </li>
                             </ul>
@@ -134,7 +134,7 @@
             @yield('content')
         </div>
     </div>
-    <script src="{!! env('APP_URL_FIX_IMAGES') !!}/js/app.js"></script>
+    <script src="{!! config('app.url_fix_images') !!}/js/app.js"></script>
 
     <!-- jQuery 3.1.1 -->
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
@@ -147,10 +147,10 @@
     <script src="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
     <script src="//js.pusher.com/3.1/pusher.min.js"></script>
     <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-    <script src="{!! env('APP_URL_FIX_IMAGES') !!}/js/autocomplete_code.js"></script>
-    <script src="{!! env('APP_URL_FIX_IMAGES') !!}/vendor/ckeditor/ckeditor.js"></script>
-    <script src="{!! env('APP_URL_FIX_IMAGES') !!}/vendor/tagsinput/tagsinput.js"></script>
-    <script src="{!! env('APP_URL_FIX_IMAGES') !!}/vendor/dropzone-5.7.0/dist/min/dropzone.min.js"></script>
+    <script src="{!! config('app.url_fix_images') !!}/js/autocomplete_code.js"></script>
+    <script src="{!! config('app.url_fix_images') !!}/vendor/ckeditor/ckeditor.js"></script>
+    <script src="{!! config('app.url_fix_images') !!}/vendor/tagsinput/tagsinput.js"></script>
+    <script src="{!! config('app.url_fix_images') !!}/vendor/dropzone-5.7.0/dist/min/dropzone.min.js"></script>
     <script type="text/javascript">
         $(function(){
             $('[data-toggle="select2"]').select2()

@@ -553,12 +553,12 @@ class MediaInvoiceController extends AppBaseController
                 Log::error('"mp_notification_id" esta vacio en la orden', ['orden' => $media_invoice->toArray()]);
                 return $this->sendError('Ocurrio un error con el metodo de pago seleccionado. No se proceso ninguna tarjeta de credito');
             }
-            $mp_enabled_test = Setting::get('mp_enabled_test', env('MP_ENABLED_TEST'));
+            $mp_enabled_test = Setting::get('mp_enabled_test', config('armatrip.mercadopago.enabled_test'));
             if ($mp_enabled_test) {
-                $MPAccessToken = Setting::get('mp_access_token_test', env('MP_ACCESS_TOKEN'));
+                $MPAccessToken = Setting::get('mp_access_token_test', config('armatrip.mercadopago.access_token'));
                 Log::debug('MP_ACCESS_TOKEN de test');
             } else {
-                $MPAccessToken = Setting::get('mp_access_token', env('MP_ACCESS_TOKEN'));
+                $MPAccessToken = Setting::get('mp_access_token', config('armatrip.mercadopago.access_token'));
                 Log::debug('MP_ACCESS_TOKEN de produccion');
             }
 

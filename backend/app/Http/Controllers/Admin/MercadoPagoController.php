@@ -84,7 +84,7 @@ class MercadoPagoController extends AppBaseController
      */
     public function IPN(Request $request)
     {
-        $mp = new MP (env('MP_CLIENT_ID'), env('MP_CLIENT_SECRET'));
+        $mp = new MP (config('armatrip.mercadopago.client_id'), config('armatrip.mercadopago.client_secret'));
 
         if ( ! isset($_GET["id"], $_GET["topic"]) || ! ctype_digit($_GET["id"])) {
             abort(404);

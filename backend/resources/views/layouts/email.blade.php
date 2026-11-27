@@ -353,7 +353,7 @@
             <div class="content">
                 <table bgcolor="#000000">
                     <tr>
-                        <td><img width="150px" src="{{env('APP_URL_FIX_IMAGES')}}/email/images/logo-big.png"/></td>
+                        <td><img width="150px" src="{{config('app.url_fix_images')}}/email/images/logo-big.png"/></td>
                         <td align="right"><h6 class="collapse">Armatrip</h6></td>
                     </tr>
                 </table>

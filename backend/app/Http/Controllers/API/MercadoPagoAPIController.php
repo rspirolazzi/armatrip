@@ -144,7 +144,7 @@ class MercadoPagoAPIController extends AppBaseController
         $order = $this->orderRepository->findWithoutFail($id);
         $mercadoPagos = $this->mercadoPagoRepository->create(array('web_cart_id'=> 1 ,'data'=>"", 'status'=>"No pagado"));
         
-        $mp = new MP (env('MP_CLIENT_ID'), env('MP_CLIENT_SECRET'));
+        $mp = new MP (config('armatrip.mercadopago.client_id'), config('armatrip.mercadopago.client_secret'));
         $preferenceData = [
             'external_reference' => $mercadoPagos->id,
             
@@ -166,7 +166,7 @@ class MercadoPagoAPIController extends AppBaseController
                 'failure' => "http://www.tu-sitio/failure",
                 'pending' => "http://www.tu-sitio/pending"
             ],
-            'notification_url'   => env('MP_NOTIFICATION_URL')
+            'notification_url'   => config('armatrip.mercadopago.notification_url')
         ];
 
         // add items

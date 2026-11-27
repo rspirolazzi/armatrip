@@ -33,12 +33,12 @@
     <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
 
-    <link rel="stylesheet" href="{!! env('APP_URL_FIX_IMAGES') !!}/css/auth.css?t=20261125b">
+    <link rel="stylesheet" href="{!! config('app.url_fix_images') !!}/css/auth.css?t=20261125b">
 </head>
 <body class="hold-transition login-page">
 <div class="login-box">
     <div class="login-logo">
-        <a href="{{ url('/home') }}"><img src="{!! env('APP_URL_FIX_IMAGES') !!}/img/logo.svg" alt="Armatrip"/></a>
+        <a href="{{ url('/home') }}"><img src="{!! config('app.url_fix_images') !!}/img/logo.svg" alt="Armatrip"/></a>
     </div>
 
     <!-- /.login-logo -->

@@ -28,8 +28,8 @@
 
     <!-- Ionicons -->
     <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
-    <link rel="stylesheet" href="{!! env('APP_URL_FIX_IMAGES') !!}/css/admin.css">
-    <link rel="stylesheet" href="{!! env('APP_URL_FIX_IMAGES') !!}/css/comanda.css">
+    <link rel="stylesheet" href="{!! config('app.url_fix_images') !!}/css/admin.css">
+    <link rel="stylesheet" href="{!! config('app.url_fix_images') !!}/css/comanda.css">
 
     @yield('css')
 </head>
@@ -54,9 +54,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/iCheck/1.0.2/icheck.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
     <script src="//js.pusher.com/3.1/pusher.min.js"></script>
-    <script src="{!! env('APP_URL_FIX_IMAGES') !!}/js/app.js"></script>
-    <script src="{!! env('APP_URL_FIX_IMAGES') !!}/js/autocomplete_code.js"></script>
-    <script src="{!! env('APP_URL_FIX_IMAGES') !!}/vendor/ckeditor/ckeditor.js"></script>
+    <script src="{!! config('app.url_fix_images') !!}/js/app.js"></script>
+    <script src="{!! config('app.url_fix_images') !!}/js/autocomplete_code.js"></script>
+    <script src="{!! config('app.url_fix_images') !!}/vendor/ckeditor/ckeditor.js"></script>
     <script type="text/javascript">
 
     </script>

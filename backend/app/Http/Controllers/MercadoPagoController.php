@@ -42,7 +42,7 @@ class MercadoPagoController extends AppBaseController
                     'title'       => $product->name,
                     'description' => $product->description,
                     'quantity'    => $item->qty,
-                    'currency_id' => env('MP_CURRENCY_ID'),
+                    'currency_id' => config('armatrip.mercadopago.currency_id'),
                     'unit_price'  => intval($item->total),
                 ];
             }
@@ -51,7 +51,7 @@ class MercadoPagoController extends AppBaseController
 
 
 
-            $mp = new MP (env('MP_CLIENT_ID'), env('MP_CLIENT_SECRET'));
+            $mp = new MP (config('armatrip.mercadopago.client_id'), config('armatrip.mercadopago.client_secret'));
             $preference = $mp->create_preference($preferenceData);
             // dd($preference);
             // dd($preference['response']['init_point']);
@@ -68,7 +68,7 @@ class MercadoPagoController extends AppBaseController
     }
 
     public function notifications(Request $request){
-        $mp = new MP (env('MP_CLIENT_ID'), env('MP_CLIENT_SECRET'));
+        $mp = new MP (config('armatrip.mercadopago.client_id'), config('armatrip.mercadopago.client_secret'));
 
         if ( ! isset($_GET["id"], $_GET["topic"]) || ! ctype_digit($_GET["id"])) {
             abort(404);

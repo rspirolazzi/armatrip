@@ -160,7 +160,7 @@ class CheckoutAPIController extends AppBaseController
                     Log::error('"mp_notification_id" esta vacio en la orden', ['orden' => $order->toArray()]);
                     return $this->sendError('Ocurrio un error con el metodo de pago seleccionado. No se proceso ninguna tarjeta de credito');
                 }
-                $MPAccessToken = env('MP_ACCESS_TOKEN');
+                $MPAccessToken = config('armatrip.mercadopago.access_token');
                 if ($order->store->getMPKey()) {
                     $MPAccessToken = $order->store->getMPAccessToken();
                     Log::debug('MP_ACCESS_TOKEN de la tienda', ['tienda' => $order->store->name]);

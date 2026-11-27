@@ -32,12 +32,12 @@
     <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
     <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
-    <link rel="stylesheet" href="{!! env('APP_URL_FIX_IMAGES') !!}/css/auth.css?t=20261125b">
+    <link rel="stylesheet" href="{!! config('app.url_fix_images') !!}/css/auth.css?t=20261125b">
 </head>
 <body class="hold-transition register-page">
 <div class="register-box">
     <div class="register-logo">
-        <a href="{{ url('/home') }}"><img src="{!! env('APP_URL_FIX_IMAGES') !!}/img/logo.svg" alt="Armatrip"/></a>
+        <a href="{{ url('/home') }}"><img src="{!! config('app.url_fix_images') !!}/img/logo.svg" alt="Armatrip"/></a>
     </div>
 
     <div class="register-box-body">

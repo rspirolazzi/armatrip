@@ -10,7 +10,7 @@
 
                 newWin.document.open();
 
-                newWin.document.write('<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"><link rel="stylesheet" href="{!! env('APP_URL_FIX_IMAGES') !!}/css/comanda.css"><style>#print{display:block} @media print {@page{size: ' + width + ' ' + height + ';margin:0;}}</style><body onload="window.print()">' + divToPrint.innerHTML + '</body>');
+                newWin.document.write('<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"><link rel="stylesheet" href="{!! config('app.url_fix_images') !!}/css/comanda.css"><style>#print{display:block} @media print {@page{size: ' + width + ' ' + height + ';margin:0;}}</style><body onload="window.print()">' + divToPrint.innerHTML + '</body>');
 
                 newWin.document.close();
 

@@ -95,7 +95,7 @@ GitHub Actions usa este mismo entorno para verificar cada push y pull request a 
 
 | Workflow | Verifica |
 |---|---|
-| [`armatrip-backend.yml`](../.github/workflows/armatrip-backend.yml) | Imagen, migraciones y semillas desde cero, `composer validate`, sintaxis PHP, carga de rutas y PHPUnit (suites `Startup` y `API`) |
+| [`armatrip-backend.yml`](../.github/workflows/armatrip-backend.yml) | Imagen, migraciones y semillas desde cero, `composer validate`, sintaxis PHP, sin `env()` fuera de `config/`, carga de rutas con `config:cache` y PHPUnit (suites `Startup` y `API`) |
 | [`armatrip-frontend.yml`](../.github/workflows/armatrip-frontend.yml) | Imagen (`npm ci`), Jest y build de producción con ESLint |
 
 Los Dockerfiles tienen una etapa `prod` para publicar; la última, `dev`, es la de este entorno y debe seguir siendo la última.

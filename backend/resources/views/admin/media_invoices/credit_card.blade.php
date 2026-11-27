@@ -84,7 +84,7 @@
 @section('scripts')
     <?php
     use App\Models\Admin\Setting;
-    $mp_enabled_test = Setting::get('mp_enabled_test', env('MP_ENABLED_TEST'));
+    $mp_enabled_test = Setting::get('mp_enabled_test', config('armatrip.mercadopago.enabled_test'));
 
     if ($mp_enabled_test) {
         $mp_public_key = Setting::get('mp_public_key_test', config('armatrip.mercadopago.public_key'));

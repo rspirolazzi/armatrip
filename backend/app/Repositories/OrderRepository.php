@@ -317,20 +317,20 @@ class OrderRepository extends BaseRepository
      */
     public function processMp(Request $request, Order $order)
     {
-        if ((bool)SettingManager::get('mp_enabled', env('MP_ENABLED', false))) {
+        if ((bool)SettingManager::get('mp_enabled', config('armatrip.mercadopago.enabled'))) {
             $return_value = ['status' => false, 'message' => 'El medio de pago no esta habilitado', 'errorCode' => Errors::$E_MP_DISABLED];
             Log::info('Comenzado a procesar pago por MercadoPago');
             try {
                 if ($request->get('mp_notification_id', null)) {
 
-                    $MP_TEST = SettingManager::get('mp_enabled_test', env('MP_ENABLED_TEST', true));
+                    $MP_TEST = SettingManager::get('mp_enabled_test', (config('armatrip.mercadopago.enabled_test') ?? true));
                     $MP_ACCESS_TOKEN = '';
 
                     if ($MP_TEST) {
-                        $MP_ACCESS_TOKEN = SettingManager::get('mp_access_token_test', env('MP_ACCESS_TOKEN_TEST'));
+                        $MP_ACCESS_TOKEN = SettingManager::get('mp_access_token_test', config('armatrip.mercadopago.access_token_test'));
                     } else {
                         Log::warning('Se esta utilizando MP en modo productivo');
-                        $MP_ACCESS_TOKEN = SettingManager::get('mp_access_token', env('MP_ACCESS_TOKEN'));
+                        $MP_ACCESS_TOKEN = SettingManager::get('mp_access_token', config('armatrip.mercadopago.access_token'));
                     }
 
                     Log::debug('Variables de MP', [

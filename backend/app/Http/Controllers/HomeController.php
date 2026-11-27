@@ -13,7 +13,7 @@ class HomeController extends Controller
     public function index()
     {
 
-        return redirect(env('APP_WEB_URL'));
+        return redirect(config('app.webUrl'));
         //return view('home');
     }
 

@@ -298,7 +298,7 @@
             <div class="content">
                 <table>
                     <tr>
-                        <td><img width="150px" src="{{env('APP_URL_FIX_IMAGES')}}/email/images/logo-big.png"/></td>
+                        <td><img width="150px" src="{{config('app.url_fix_images')}}/email/images/logo-big.png"/></td>
                     </tr>
                 </table>
             </div>

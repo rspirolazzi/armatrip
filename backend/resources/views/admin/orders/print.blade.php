@@ -11,7 +11,7 @@
 
                 newWin.document.open();
 
-                newWin.document.write('<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"><link rel="stylesheet" href="{!! env('APP_URL_FIX_IMAGES') !!}/css/comanda.css"><style>#print{display:block} @media print {@page{size: '+width+' '+height+';margin:0;}}</style><body onload="window.print();">'+divToPrint.innerHTML+'</body>');
+                newWin.document.write('<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"><link rel="stylesheet" href="{!! config('app.url_fix_images') !!}/css/comanda.css"><style>#print{display:block} @media print {@page{size: '+width+' '+height+';margin:0;}}</style><body onload="window.print();">'+divToPrint.innerHTML+'</body>');
 
                 newWin.document.close();
 
@@ -26,7 +26,7 @@
     <div id="print">
         <div class="print-container">
             <div>
-                <div class="text-center"><img src="{!! env('APP_URL_FIX_IMAGES') !!}/img/logo-mono.svg" width="120px"></div>
+                <div class="text-center"><img src="{!! config('app.url_fix_images') !!}/img/logo-mono.svg" width="120px"></div>
             </div>
             <h2 class="text-center">PEDIDO ONLINE N° {{ $order->number }}</h2>
             <div class="sucursal">{{ $address->street }},

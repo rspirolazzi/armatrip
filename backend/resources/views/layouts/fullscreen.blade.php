@@ -28,8 +28,8 @@
 
     <!-- Ionicons -->
     <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
-    <link rel="stylesheet" href="{!! env('APP_URL_FIX_IMAGES') !!}/css/admin.css">
-    <link rel="stylesheet" href="{!! env('APP_URL_FIX_IMAGES') !!}/css/comanda.css">
+    <link rel="stylesheet" href="{!! config('app.url_fix_images') !!}/css/admin.css">
+    <link rel="stylesheet" href="{!! config('app.url_fix_images') !!}/css/comanda.css">
 
     @yield('css')
 </head>
@@ -41,8 +41,8 @@
         {{--<header class="main-header">
 
             <!-- Logo -->
-            <a href="{!! env('APP_URL_FIX_IMAGES') !!}/admin" class="logo">
-                <img src="{!! env('APP_URL_FIX_IMAGES') !!}/img/logo-negativo.svg"/>
+            <a href="{!! config('app.url_fix_images') !!}/admin" class="logo">
+                <img src="{!! config('app.url_fix_images') !!}/img/logo-negativo.svg"/>
             </a>
             <!-- Header Navbar -->
             <nav class="navbar navbar-static-top" role="navigation">
