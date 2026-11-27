@@ -86,6 +86,51 @@ La semilla carga datos de ejemplo y usuarios `@armatrip.test` con la contraseña
 
 **Cabeceras de la web.** El frontend ya envía cabeceras de seguridad y una CSP en modo `Content-Security-Policy-Report-Only` ([security-headers.conf](../frontend/docker/security-headers.conf)). Recorrer los dos flujos en la demo, incluido el pago de prueba, con la consola abierta. Si no aparecen violaciones, cambiar el nombre de la cabecera a `Content-Security-Policy` para que bloquee. La sesión web dura `JWT_TTL` minutos (por defecto 240).
 
+### Un solo dominio: web en la raíz y API en `/api/v1`
+
+Ejemplo con `armatrip.example.com`. Laravel atiende la API en `/api/...` y las imágenes subidas en `/storage/...`, así que el proxy reescribe `/api/v1/X` a `/api/X` y `/api/v1/storage/X` a `/storage/X`. Dentro del bloque `server` HTTPS:
+
+```nginx
+location /api/v1/ {
+    set $backend http://127.0.0.1:8085;   # "set" va antes de "rewrite ... break"
+    rewrite ^/api/v1/storage/(.*)$ /storage/$1 break;
+    rewrite ^/api/v1/(.*)$         /api/$1     break;
+    proxy_pass $backend;
+    proxy_set_header Host              $host;
+    proxy_set_header X-Real-IP         $remote_addr;
+    proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_set_header X-Forwarded-Host  $host;
+    proxy_set_header X-Forwarded-Port  443;
+    client_max_body_size 10m;
+}
+
+location / {
+    set $frontend http://127.0.0.1:3085;
+    proxy_pass $frontend;
+    proxy_set_header Host              $host;
+    proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    # El contenedor ya las envía: así no se duplican si el server agrega las suyas.
+    proxy_hide_header X-Frame-Options;
+    proxy_hide_header X-Content-Type-Options;
+    proxy_hide_header Referrer-Policy;
+}
+```
+
+Si nginx corre en un contenedor de la misma red de Docker, usar `resolver 127.0.0.11 valid=30s;` y los nombres de servicio en el puerto interno (`http://armatrip-backend:80`, `http://armatrip-frontend:80`). En ese caso no publicar los puertos del backend.
+
+Además:
+
+| Dónde | Valor |
+|---|---|
+| `backend.env` | `APP_URL=https://armatrip.example.com/api/v1`, `APP_WEB_URL=https://armatrip.example.com` y `TRUSTED_PROXIES=*`. `TRUSTED_PROXIES=*` es seguro solo si el backend no es accesible sin pasar por el proxy |
+| Variables de GitHub | `REACT_APP_API_URL=https://armatrip.example.com/api/v1/` (con `/` final) y `APP_BASE_PATH=/`. Se compilan en la imagen: volver a ejecutar *armatrip-frontend* |
+
+Con este esquema el **panel `/admin` no es accesible**: esa ruta la atiende la web, igual que los assets del panel y el logo de los emails (`APP_URL_FIX_IMAGES`). Para usarlo, publicar el backend completo en un subdominio propio (un `location /` hacia el backend) y apuntar `APP_URL_FIX_IMAGES` a ese subdominio, o entrar por un túnel SSH.
+
+Para probarlo: `nginx -t`, recargar nginx y verificar que `curl https://armatrip.example.com/api/v1/provinces` devuelva JSON.
+
 ## Actualizar: pull y up
 
 Es lo que ejecuta el workflow; sirve igual a mano, desde `DEPLOY_PATH`:
